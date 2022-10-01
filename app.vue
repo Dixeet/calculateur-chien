@@ -1,6 +1,6 @@
 <template>
   <v-app>
-  <NuxtLoadingIndicator />
+    <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
