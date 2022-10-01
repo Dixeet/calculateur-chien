@@ -4,16 +4,48 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "preview": "nuxt preview"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.11"
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-vue": "^9.5.1",
+    "nuxt": "3.0.0-rc.11",
+    "prettier": "2.7.1"
   },
   "dependencies": {
     "mdi": "^2.2.43",
     "sass": "^1.55.0",
     "vite-plugin-vuetify": "^1.0.0-alpha.17",
     "vuetify": "^3.0.0-beta.11"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/vue3-recommended",
+      "prettier"
+    ],
+    "rules": {
+      "no-console": "error",
+      "no-undef": "warn"
+    },
+    "overrides": [
+      {
+        "files": ["pages/*.vue", "layouts/*.vue"],
+        "rules": {
+          "vue/multi-word-component-names": ["off"]
+        }
+      }
+    ]
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "singleQuote": true,
+    "endOfLine": "auto"
   }
 }

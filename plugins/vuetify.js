@@ -1,15 +1,11 @@
-import { createVuetify } from 'vuetify'
+import { createVuetify } from 'vuetify';
 
-
-export default defineNuxtPlugin(nuxtApp => {
+export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     theme: {
-      defaultTheme: 'dark'
-    }
-  })
+      defaultTheme: 'dark',
+    },
+  });
 
-  // nuxtApp.vueApp.config.compilerOptions.isCustomElement = (tag) => {
-  //   return tag === 'NuxtPage';
-  // }
-  nuxtApp.vueApp.use(vuetify)
-})
+  nuxtApp.vueApp.use(vuetify);
+});

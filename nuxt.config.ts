@@ -2,10 +2,7 @@
 import vuetify from 'vite-plugin-vuetify';
 
 export default defineNuxtConfig({
-  css: [
-    'vuetify/lib/styles/main.sass',
-    'mdi/css/materialdesignicons.min.css',
-  ],
+  css: ['vuetify/lib/styles/main.sass', 'mdi/scss/materialdesignicons.scss'],
   build: {
     transpile: ['vuetify'],
   },
@@ -13,22 +10,13 @@ export default defineNuxtConfig({
     define: {
       'process.env.DEBUG': false,
     },
-    vue: {
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => {
-            return tag == 'NuxtPage';
-          }
-        }
-      }
-    }
   },
   modules: [
     async (options, nuxt) => {
-      // @ts-ignore
-      nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(
-        vuetify()
-      ));
-    }
+      nuxt.hooks.hook('vite:extendConfig', (config) =>
+        // @ts-ignore
+        config.plugins.push(vuetify()),
+      );
+    },
   ],
-})
+});
