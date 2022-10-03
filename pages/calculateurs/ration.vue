@@ -1,9 +1,11 @@
 <script setup>
 definePageMeta({
-  title: 'CalculaChien',
+  title: 'Calculateur de ration',
 });
 </script>
+
 <template>
-  <div></div>
+  <div>Calc</div>
 </template>
+
 <style lang="scss" scoped></style>

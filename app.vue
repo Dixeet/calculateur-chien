@@ -1,7 +1,20 @@
+<script setup>
+import { useTheme } from 'vuetify';
+
+const route = useRoute();
+const theme = useTheme();
+
+watchEffect(() => {
+  useHead({
+    title: route.meta.title,
+  });
+});
+</script>
+
 <template>
   <v-app>
-    <NuxtLoadingIndicator />
-    <NuxtLayout>
+    <NuxtLoadingIndicator :color="theme.current.value.colors.info" />
+    <NuxtLayout :title="route.meta.title">
       <NuxtPage />
     </NuxtLayout>
   </v-app>
