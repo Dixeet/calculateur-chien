@@ -1,9 +1,17 @@
 import { createVuetify } from 'vuetify';
+import { aliases, fa } from 'vuetify/iconsets/fa';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     display: {
       mobileBreakpoint: 'md',
+    },
+    icons: {
+      defaultSet: 'fa',
+      aliases,
+      sets: {
+        fa,
+      },
     },
     theme: {
       defaultTheme: 'custom',

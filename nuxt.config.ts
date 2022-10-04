@@ -2,7 +2,13 @@
 import vuetify from 'vite-plugin-vuetify';
 
 export default defineNuxtConfig({
-  css: ['vuetify/lib/styles/main.sass', 'mdi/scss/materialdesignicons.scss'],
+  css: [
+    'vuetify/lib/styles/main.sass',
+    '@fortawesome/fontawesome-free/scss/fontawesome.scss',
+    '@fortawesome/fontawesome-free/scss/regular.scss',
+    '@fortawesome/fontawesome-free/scss/solid.scss',
+    'assets/scss/style.scss',
+  ],
   build: {
     transpile: ['vuetify'],
   },
