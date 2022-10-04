@@ -1,5 +1,9 @@
 .v-icon {
-  &.fa-regular, &.fa-solid, &.fas, &.far, &.fa {
+  &.fa-regular,
+  &.fa-solid,
+  &.fas,
+  &.far,
+  &.fa {
     --v-icon-size-multiplier: 0.8 !important;
   }
 }

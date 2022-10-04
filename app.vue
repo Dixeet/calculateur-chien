@@ -1,14 +1,14 @@
 <script setup>
-import { useTheme } from 'vuetify';
+  import { useTheme } from 'vuetify';
 
-const route = useRoute();
-const theme = useTheme();
+  const route = useRoute();
+  const theme = useTheme();
 
-watchEffect(() => {
-  useHead({
-    title: route.meta.title,
+  watchEffect(() => {
+    useHead({
+      title: route.meta.title,
+    });
   });
-});
 </script>
 
 <template>

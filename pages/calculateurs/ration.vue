@@ -1,7 +1,7 @@
 <script setup>
-definePageMeta({
-  title: 'Calculateur de ration',
-});
+  definePageMeta({
+    title: 'Calculateur de ration',
+  });
 </script>
 
 <template>

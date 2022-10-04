@@ -58,6 +58,8 @@
   "prettier": {
     "trailingComma": "all",
     "singleQuote": true,
-    "endOfLine": "auto"
+    "endOfLine": "auto",
+    "bracketSameLine": true,
+    "vueIndentScriptAndStyle": true
   }
 }

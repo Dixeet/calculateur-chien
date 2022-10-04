@@ -1,7 +1,7 @@
 <script setup>
-definePageMeta({
-  title: 'CalculaChien',
-});
+  definePageMeta({
+    title: 'CalculaChien',
+  });
 </script>
 <template>
   <div></div>

@@ -1,9 +1,9 @@
 <script setup>
-const drawer = ref(null);
+  const drawer = ref(null);
 
-function toggleDrawer() {
-  drawer.value = !drawer.value;
-}
+  function toggleDrawer() {
+    drawer.value = !drawer.value;
+  }
 </script>
 
 <template>
@@ -13,7 +13,10 @@ function toggleDrawer() {
     </v-navigation-drawer>
 
     <v-app-bar app>
-      <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        aria-label="bouton menu"
+        :aria-expanded="drawer"
+        @click.stop="toggleDrawer"></v-app-bar-nav-icon>
       <v-app-bar-title>
         {{ $attrs.title }}
       </v-app-bar-title>
@@ -27,7 +30,7 @@ function toggleDrawer() {
 </template>
 
 <style lang="scss" scoped>
-.v-toolbar.v-app-bar {
-  width: 100%;
-}
+  .v-toolbar.v-app-bar {
+    width: 100%;
+  }
 </style>
