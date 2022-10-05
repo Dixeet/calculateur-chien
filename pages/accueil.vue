@@ -1,6 +1,7 @@
 <script setup>
   definePageMeta({
     title: 'CalculaChien',
+    alias: '/',
   });
 </script>
 <template>

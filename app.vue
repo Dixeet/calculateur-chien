@@ -3,12 +3,6 @@
 
   const route = useRoute();
   const theme = useTheme();
-
-  watchEffect(() => {
-    useHead({
-      title: route.meta.title,
-    });
-  });
 </script>
 
 <template>
