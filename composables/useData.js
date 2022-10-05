@@ -1,6 +1,6 @@
 import data from '../data/data.json';
 
-export default defineNuxtPlugin(() => {
+export default function useData() {
   class Entities {
     constructor(name) {
       this.name = name;
@@ -29,15 +29,11 @@ export default defineNuxtPlugin(() => {
     }
   }
   return {
-    provide: {
-      data: {
-        activities: new Entities('activities'),
-        sterilizationStatus: new Entities('sterilizationStatus'),
-        bodyConditions: new Entities('bodyConditions'),
-        livingPlaces: new Entities('livingPlaces'),
-        races: new Entities('races'),
-        lifeStages: new Entities('lifeStages'),
-      },
-    },
+    activities: new Entities('activities'),
+    sterilizationStatus: new Entities('sterilizationStatus'),
+    bodyConditions: new Entities('bodyConditions'),
+    livingPlaces: new Entities('livingPlaces'),
+    races: new Entities('races'),
+    lifeStages: new Entities('lifeStages'),
   };
-});
+}
