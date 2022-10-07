@@ -1,4 +1,5 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+import pkg from './package.json';
 import vuetify from 'vite-plugin-vuetify';
 
 export default defineNuxtConfig({
@@ -57,6 +58,12 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-free/scss/solid.scss',
     'assets/scss/style.scss',
   ],
+  runtimeConfig: {
+    public: {
+      appVersion: pkg.version,
+      appName: pkg.name,
+    },
+  },
   build: {
     transpile: ['vuetify'],
   },
