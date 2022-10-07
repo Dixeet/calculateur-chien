@@ -1,4 +1,12 @@
 {
+  "name": "CalculaChien",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/Dixeet/calculateur-chien",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dixeet/calculateur-chien.git"
+  },
   "private": true,
   "scripts": {
     "build": "nuxt build",
