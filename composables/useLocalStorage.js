@@ -1,7 +1,9 @@
+import { isClient } from './utils';
+
 export default function useLocalStorage() {
   return {
     get(key) {
-      if (typeof window !== 'undefined') {
+      if (isClient) {
         const result = localStorage.getItem(key);
         try {
           return JSON.parse(result);
@@ -15,18 +17,18 @@ export default function useLocalStorage() {
       return null;
     },
     set(key, value) {
-      if (typeof window !== 'undefined') {
+      if (isClient) {
         const data = typeof value === 'object' ? JSON.stringify(value) : value;
         localStorage.setItem(key, data);
       }
     },
     remove(key) {
-      if (typeof window !== 'undefined') {
+      if (isClient) {
         localStorage.removeItem(key);
       }
     },
     clear() {
-      if (typeof window !== 'undefined') {
+      if (isClient) {
         localStorage.clear();
       }
     },
