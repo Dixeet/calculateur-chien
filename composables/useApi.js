@@ -1,4 +1,6 @@
 import DogDescriptionApi from './api/dogDescriptionApi';
+import { KibbleApi } from './api/foodApi';
+import { TinCanApi } from './api/foodApi';
 
 export default function useApi() {
   return {
@@ -8,5 +10,10 @@ export default function useApi() {
     livingPlaces: new DogDescriptionApi('livingPlaces'),
     races: new DogDescriptionApi('races'),
     lifeStages: new DogDescriptionApi('lifeStages'),
+    kibbles: new KibbleApi(),
+    tinCans: new TinCanApi(),
   };
 }
+
+export { KibbleApi } from './api/foodApi';
+export { TinCanApi } from './api/foodApi';
