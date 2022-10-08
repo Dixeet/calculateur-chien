@@ -1,11 +1,12 @@
 import useLocalStorage from '~/composables/useLocalStorage';
 
+const localStorage = useLocalStorage();
 export class FoodApi {
   type = '';
   #data = [];
   constructor(type) {
     this.type = type;
-    this.#data = useLocalStorage().get(type) ?? [];
+    this.#data = localStorage.get(type) ?? [];
   }
 
   static new() {
@@ -61,12 +62,14 @@ export class FoodApi {
   }
 }
 
+const kibblesName = 'kibbles';
+localStorage.registerService(kibblesName);
 export class KibbleApi extends FoodApi {
   constructor() {
-    super('kibbles');
+    super(kibblesName);
   }
 
-  static key = 'kibbles';
+  static name = kibblesName;
 
   static new() {
     const food = super.new();
@@ -80,12 +83,14 @@ export class KibbleApi extends FoodApi {
   }
 }
 
+const tincanName = 'tincan';
+localStorage.registerService(tincanName);
 export class TinCanApi extends FoodApi {
   constructor() {
-    super('tincan');
+    super(tincanName);
   }
 
-  static key = 'tincan';
+  static name = tincanName;
 
   static new() {
     const food = super.new();

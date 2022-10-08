@@ -9,8 +9,8 @@ export default function useApi() {
     livingPlaces: new DogDescriptionApi('livingPlaces'),
     races: new DogDescriptionApi('races'),
     lifeStages: new DogDescriptionApi('lifeStages'),
-    kibbles: new KibbleApi(),
-    tinCans: new TinCanApi(),
+    [KibbleApi.name]: new KibbleApi(),
+    [TinCanApi.name]: new TinCanApi(),
   };
 }
 

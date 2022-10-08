@@ -1,23 +1,28 @@
 import { byteSize, isClient } from '~/composables/utils';
-import { KibbleApi, TinCanApi } from '~/composables/api/foodApi';
+
+const servicesRegistered = reactive([]);
+let storageUsed = ref(getStorageUsage());
 
 function getStorageUsage() {
   let res = 0;
   if (isClient) {
-    res = byteSize(
-      localStorage.getItem(KibbleApi.key) ??
-        null + localStorage.getItem(TinCanApi.key) ??
-        null,
-    );
+    servicesRegistered.forEach((service) => {
+      res += byteSize(localStorage.getItem(service));
+    });
   }
   return res;
 }
 
-let storageUsed = ref(getStorageUsage());
+watch(servicesRegistered, () => (storageUsed.value = getStorageUsage()));
 
 export default function useLocalStorage() {
   return {
     storageUsed,
+    registerService(name) {
+      if (!servicesRegistered.includes(name)) {
+        servicesRegistered.push(name);
+      }
+    },
     get(key) {
       if (isClient) {
         const result = localStorage.getItem(key);
@@ -61,11 +66,11 @@ export default function useLocalStorage() {
       }
 
       if (isClient) {
-        this.remove(KibbleApi.key);
+        this.remove('test');
         let i;
         try {
           for (i = 0; i <= 10000; i += 250) {
-            this.set(KibbleApi.key, add(i));
+            this.set('test', add(i));
           }
         } catch (e) {
           // eslint-disable-next-line no-console
