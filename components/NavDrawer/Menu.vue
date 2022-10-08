@@ -1,6 +1,12 @@
 <script setup>
   import { useTheme } from 'vuetify';
+  import useLocalStorage from '../../composables/useLocalStorage';
+
   const emit = defineEmits(['close']);
+  const storageUsed = computed(() => {
+    const res = useLocalStorage().storageUsed.value / 1024;
+    return res < 1000 ? `${round(res, 1)}KB` : `${round(res / 1000, 1)}MB`;
+  });
 
   const navElements = [
     { text: 'Accueil', icon: 'fa-solid fa-house', to: '/' },
@@ -60,7 +66,7 @@
   </div>
   <v-divider />
   <div>
-    <v-list nav density="compact">
+    <v-list density="compact">
       <template
         v-for="({ type, text, icon, to, textClass }, index) in navElements"
         :key="index">
@@ -74,15 +80,43 @@
           v-else-if="type === 'divider'"
           :class="textClass ? textClass : 'mt-2'" />
 
-        <v-list-item v-else active-color="primary" tag="NuxtLink" :to="to">
+        <v-list-item
+          v-else
+          active-color="primary"
+          tag="NuxtLink"
+          :disabled="!to"
+          :to="to">
           <template v-if="icon" #prepend>
             <v-icon class="mr-5" :icon="icon" />
           </template>
           <span :class="textClass ? textClass : ''">{{ text }}</span>
         </v-list-item>
       </template>
+      <v-divider class="my-6 mb-1" />
+      <client-only>
+        <v-list-subheader class="text-subtitle-2 app-data">
+          <span>Données</span>
+          <span class="float-right">{{ storageUsed }} / 5MB</span>
+        </v-list-subheader>
+      </client-only>
+      <v-list-item link disabled active-color="primary">
+        <template #prepend>
+          <v-icon class="mr-5" icon="fa-solid fa-download" />
+        </template>
+        <span>Importer</span>
+      </v-list-item>
+      <v-list-item disabled link active-color="primary">
+        <template #prepend>
+          <v-icon class="mr-5" icon="fa-solid fa-upload" />
+        </template>
+        <span>Exporter</span>
+      </v-list-item>
     </v-list>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .app-data :deep(.v-list-subheader__text) {
+    flex-grow: 1;
+  }
+</style>

@@ -1,4 +1,4 @@
-import useLocalStorage from '../useLocalStorage';
+import useLocalStorage from '~/composables/useLocalStorage';
 
 export class FoodApi {
   type = '';
@@ -66,6 +66,8 @@ export class KibbleApi extends FoodApi {
     super('kibbles');
   }
 
+  static key = 'kibbles';
+
   static new() {
     const food = super.new();
     return {
@@ -82,6 +84,8 @@ export class TinCanApi extends FoodApi {
   constructor() {
     super('tincan');
   }
+
+  static key = 'tincan';
 
   static new() {
     const food = super.new();

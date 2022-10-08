@@ -3,6 +3,7 @@ import { aliases, fa } from 'vuetify/iconsets/fa';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
+    ssr: true,
     display: {
       mobileBreakpoint: 'md',
     },

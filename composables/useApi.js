@@ -1,6 +1,5 @@
-import DogDescriptionApi from './api/dogDescriptionApi';
-import { KibbleApi } from './api/foodApi';
-import { TinCanApi } from './api/foodApi';
+import DogDescriptionApi from '~/composables/api/dogDescriptionApi';
+import { KibbleApi, TinCanApi } from '~/composables/api/foodApi';
 
 export default function useApi() {
   return {

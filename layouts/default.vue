@@ -18,7 +18,7 @@
         :aria-expanded="drawer"
         @click.stop="toggleDrawer"></v-app-bar-nav-icon>
       <v-app-bar-title>
-        {{ $attrs.title }}
+        <v-toolbar-title tag="h1" :text="$attrs.title"></v-toolbar-title>
       </v-app-bar-title>
     </v-app-bar>
     <v-main>

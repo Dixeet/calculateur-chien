@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div>Calc</div>
+  <div></div>
 </template>
 
 <style lang="scss" scoped></style>
