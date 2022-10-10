@@ -1,7 +1,6 @@
 <script setup>
   import { useTheme } from 'vuetify';
 
-  const route = useRoute();
   const theme = useTheme();
 
   const config = useRuntimeConfig();
@@ -13,7 +12,7 @@
 <template>
   <v-app>
     <NuxtLoadingIndicator :color="theme.current.value.colors.info" />
-    <NuxtLayout :title="route.meta.title">
+    <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
   </v-app>

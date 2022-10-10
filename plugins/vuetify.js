@@ -17,7 +17,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     theme: {
       defaultTheme: 'customDark',
       variations: {
-        colors: ['primary', 'secondary'],
+        colors: ['primary', 'secondary', 'background', 'surface'],
         lighten: 2,
         darken: 2,
       },
@@ -25,10 +25,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         customDark: {
           dark: true,
           colors: {
-            primary: '#ffb865',
+            primary: '#eabd78',
             secondary: '#e0c1a3',
-            background: '#1f1b16',
-            surface: '#1f1b16',
+            background: '#251e13',
+            surface: '#2D2718',
             success: '#bdcd9d',
             warning: '#ffb4ab',
             error: '#ffb4ab',
@@ -38,10 +38,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         customLight: {
           dark: false,
           colors: {
-            primary: '#7b5800',
-            secondary: '#6c5c3f',
-            background: '#fffbff',
-            surface: '#fffbff',
+            primary: '#8a6d4a',
+            secondary: '#b19e77',
+            background: '#f7f0df',
+            surface: '#f9f5eb',
             success: '#4c6545',
             warning: '#ba1a1a',
             error: '#ba1a1a',

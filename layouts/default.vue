@@ -1,5 +1,6 @@
 <script setup>
   const drawer = ref(null);
+  const route = useRoute();
 
   function toggleDrawer() {
     drawer.value = !drawer.value;
@@ -8,7 +9,7 @@
 
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer v-model="drawer" color="surface" app>
       <NavDrawerMenu @close="toggleDrawer" />
     </v-navigation-drawer>
 
@@ -18,11 +19,11 @@
         :aria-expanded="drawer"
         @click.stop="toggleDrawer"></v-app-bar-nav-icon>
       <v-app-bar-title>
-        <v-toolbar-title tag="h1" :text="$attrs.title"></v-toolbar-title>
+        <v-toolbar-title tag="h1" :text="route.meta.title"></v-toolbar-title>
       </v-app-bar-title>
     </v-app-bar>
     <v-main>
-      <v-container>
+      <v-container :fluid="route.meta.containerFluid">
         <slot />
       </v-container>
     </v-main>
