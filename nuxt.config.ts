@@ -58,6 +58,14 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-free/scss/solid.scss',
     'assets/scss/style.scss',
   ],
+  components: {
+    dirs: [
+      {
+        path: '~/components/base',
+      },
+      '~/components',
+    ],
+  },
   runtimeConfig: {
     public: {
       appVersion: pkg.version,
