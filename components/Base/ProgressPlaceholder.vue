@@ -17,7 +17,6 @@
       default: 'fade-transition',
     },
   });
-  const attrs = useAttrs();
 </script>
 
 <template>
@@ -26,7 +25,7 @@
       v-show="pending"
       :active="pending"
       indeterminate
-      v-bind="attrs" />
+      v-bind="$attrs" />
     <transition :name="transition">
       <div v-show="!pending">
         <slot />

@@ -62,14 +62,6 @@ export default defineNuxtConfig({
   imports: {
     autoImport: false,
   },
-  components: {
-    dirs: [
-      {
-        path: '~/components/base',
-      },
-      '~/components',
-    ],
-  },
   runtimeConfig: {
     public: {
       appVersion: pkg.version,
