@@ -1,4 +1,6 @@
 <script setup>
+  import { ref, useRoute } from '#imports';
+
   const drawer = ref(null);
   const route = useRoute();
 

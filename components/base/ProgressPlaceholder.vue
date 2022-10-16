@@ -5,6 +5,8 @@
 </script>
 
 <script setup>
+  import { useAttrs } from '#imports';
+
   defineProps({
     pending: {
       type: Boolean,

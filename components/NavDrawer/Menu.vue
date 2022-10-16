@@ -1,4 +1,5 @@
 <script setup>
+  import { computed, round } from '#imports';
   import { useTheme } from 'vuetify';
   import useLocalStorage from '../../composables/useLocalStorage';
 

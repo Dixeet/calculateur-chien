@@ -1,6 +1,8 @@
 <script setup>
+  import { definePageMeta } from '#imports';
+
   definePageMeta({
-    title: 'CalculaChien',
+    title: "L'app pour mouaf",
     alias: '/',
   });
 </script>

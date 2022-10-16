@@ -1,4 +1,4 @@
-import useLocalStorage from '~/composables/useLocalStorage';
+import useLocalStorage from '#imports';
 
 const localStorage = useLocalStorage();
 export class FoodApi {

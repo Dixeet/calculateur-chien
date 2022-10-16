@@ -1,5 +1,6 @@
 <script setup>
   import { useTheme } from 'vuetify';
+  import { useRuntimeConfig } from '#imports';
 
   const theme = useTheme();
 

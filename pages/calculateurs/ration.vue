@@ -1,4 +1,6 @@
 <script setup>
+  import { definePageMeta } from '#imports';
+
   definePageMeta({
     title: 'Calculateur de ration',
   });

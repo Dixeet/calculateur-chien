@@ -1,5 +1,6 @@
 import { createVuetify } from 'vuetify';
 import { aliases, fa } from 'vuetify/iconsets/fa';
+import { defineNuxtPlugin } from '#imports';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({

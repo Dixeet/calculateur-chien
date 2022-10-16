@@ -1,5 +1,6 @@
 {
-  "name": "CalculaChien",
+  "name": "app-pour-mouaf",
+  "description": "L'application compagnon pour chien",
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/Dixeet/calculateur-chien",
@@ -45,8 +46,7 @@
       "prettier"
     ],
     "rules": {
-      "no-console": "error",
-      "no-undef": "warn"
+      "no-console": "error"
     },
     "overrides": [
       {
