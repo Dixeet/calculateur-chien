@@ -1,6 +1,6 @@
-<script setup>
-  import { useTheme } from 'vuetify';
+<script lang="ts" setup>
   import { useRuntimeConfig } from '#imports';
+  import { useTheme } from 'vuetify';
 
   const theme = useTheme();
 

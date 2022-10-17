@@ -1,7 +1,6 @@
-<script setup>
-  import { computed, round } from '#imports';
+<script lang="ts" setup>
+  import { computed, round, useLocalStorage } from '#imports';
   import { useTheme } from 'vuetify';
-  import useLocalStorage from '../../composables/useLocalStorage';
 
   const emit = defineEmits(['close']);
   const storageUsed = computed(() => {
