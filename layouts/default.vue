@@ -1,7 +1,7 @@
-<script setup>
+<script lang="ts" setup>
   import { ref, useRoute } from '#imports';
 
-  const drawer = ref(null);
+  const drawer = ref<boolean | null>(null);
   const route = useRoute();
 
   function toggleDrawer() {

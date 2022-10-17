@@ -4,7 +4,7 @@
   };
 </script>
 
-<script setup>
+<script lang="ts" setup>
   import { useAttrs } from '#imports';
 
   defineProps({
