@@ -1,3 +1,4 @@
+import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import { aliases, fa } from 'vuetify/iconsets/fa';
 import { defineNuxtPlugin } from '#imports';
@@ -34,7 +35,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             surface: '#2D2718',
             success: '#bdcd9d',
             warning: '#ffb4ab',
-            error: '#ffb4ab',
+            error: '#f44336',
             info: '#9d8e81',
           },
         },
