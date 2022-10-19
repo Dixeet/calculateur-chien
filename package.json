@@ -15,7 +15,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "prepare": "nuxt prepare",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "tsc": "vue-tsc --skipLibCheck --noEmit --pretty",
+    "tsc-watch": "vue-tsc --skipLibCheck --noEmit --pretty --watch",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.0",
@@ -25,7 +28,8 @@
     "eslint-plugin-vue": "^9.5.1",
     "nuxt": "3.0.0-rc.11",
     "prettier": "2.7.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "vue-tsc": "^1.0.8"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.2.0",
@@ -52,9 +56,18 @@
       "plugin:vue/vue3-recommended",
       "prettier"
     ],
-    "plugins": ["@typescript-eslint"],
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "rules": {
-      "no-console": "error"
+      "no-console": "error",
+      "line-comment-position": [
+        "error",
+        {
+          "position": "beside",
+          "ignorePattern": "ts-ignore|EXPLICIT|NOERROR|ALLOW|TODO|todo|Todo"
+        }
+      ]
     },
     "overrides": [
       {
