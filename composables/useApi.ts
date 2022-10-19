@@ -14,4 +14,11 @@ export default function useApi() {
   };
 }
 
-export { kibbleApi, tinCanApi } from './api/foodApi';
+export {
+  kibbleApi,
+  tinCanApi,
+  type FoodType,
+  type Food,
+  type Kibble,
+  type TinCan,
+} from './api/foodApi';

@@ -1,6 +1,6 @@
-import { useLocalStorage } from '#imports';
+import { useLocalStorage, NotFoundError } from '#imports';
 
-interface Food {
+export interface Food {
   brand: string;
   variety: string;
   composition: {
@@ -16,14 +16,14 @@ interface Food {
   variations?: Food['meta'][];
 }
 
-interface Kibble extends Omit<Food, 'variations'> {
+export interface Kibble extends Omit<Food, 'variations'> {
   meta?: Food['meta'] & {
     weight?: number;
   };
   variations?: Kibble['meta'][];
 }
 
-interface TinCan extends Omit<Food, 'variations'> {
+export interface TinCan extends Omit<Food, 'variations'> {
   meta?: Food['meta'] & {
     numberOfCans?: number;
     canWeight?: number;
@@ -31,7 +31,7 @@ interface TinCan extends Omit<Food, 'variations'> {
   variations?: TinCan['meta'][];
 }
 
-type FoodType = 'kibbles' | 'tincans';
+export type FoodType = 'kibbles' | 'tincans';
 
 const localStorage = useLocalStorage();
 
@@ -65,7 +65,7 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
       if (typeof fn === 'function') {
         const res = data.filter(fn);
         if (res.length === 0) {
-          throw new Error(`No ${type} found with this filter`);
+          throw new NotFoundError(`No ${type} found with this filter`);
         }
         return res;
       }
@@ -80,6 +80,9 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
 
     async delete(fn: (entity: Type) => boolean) {
       const index = data.findIndex(fn);
+      if (index === -1) {
+        throw new NotFoundError(`No ${type} found to delete with this filter`);
+      }
       const res = data.splice(index, 1);
       this.updateStorage();
       return res;

@@ -1,4 +1,5 @@
 import dogDescriptions from './dogDescriptions.json';
+import { NotFoundError } from '#imports';
 
 interface BaseDogDescription {
   label: string;
@@ -63,7 +64,7 @@ export default function dogDescriptionApi(name: keyof DogDescriptions) {
       if (typeof fn === 'function') {
         const res = data.filter(fn);
         if (res.length === 0) {
-          throw new Error(`No ${name} found with this filter`);
+          throw new NotFoundError(`No ${name} found with this filter`);
         }
         return res;
       }
@@ -74,7 +75,7 @@ export default function dogDescriptionApi(name: keyof DogDescriptions) {
       if (res) {
         return res;
       }
-      throw new Error(`No ${name} found with this label "${label}"`);
+      throw new NotFoundError(`No ${name} found with this label "${label}"`);
     },
   };
 }
