@@ -12,3 +12,6 @@ export function round(number: number, decimal = 0) {
   const factor = Math.pow(10, decimal);
   return Math.round(number * factor) / factor;
 }
+export function simpleUid() {
+  return Math.random().toString(16).slice(2);
+}

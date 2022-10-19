@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { computed, round, useLocalStorage } from '#imports';
   import { useTheme } from 'vuetify';
+  import { interfaceDeclaration } from '@babel/types';
 
   const emit = defineEmits(['close']);
   const storageUsed = computed(() => {
@@ -8,7 +9,14 @@
     return res < 1000 ? `${round(res, 1)}KB` : `${round(res / 1000, 1)}MB`;
   });
 
-  const navElements = [
+  interface NavElements {
+    text?: string;
+    icon?: string;
+    to?: string;
+    type?: string;
+    textClass?: string | string[] | object;
+  }
+  const navElements: NavElements[] = [
     { text: 'Accueil', icon: 'fa-solid fa-house', to: '/' },
     { text: 'Calculateurs', type: 'list-subheader' },
     {
@@ -28,7 +36,7 @@
     {
       text: 'Croquettes',
       icon: 'fa-solid fa-bowl-rice',
-      to: '',
+      to: '/nourriture/croquettes',
     },
     {
       text: 'Pâtées',
