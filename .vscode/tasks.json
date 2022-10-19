@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "tsc",
+      "label": "Typescript",
+      "detail": "vue-tsc --noEmit",
+      "presentation": {
+        "reveal": "never",
+        "revealProblems": "onProblem",
+        "clear": true,
+        "group": "errors"
+      },
+      "problemMatcher": {
+        "owner": "vuetsc",
+        "pattern": "$tsc"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "label": "Linter",
+      "detail": "eslint",
+      "presentation": {
+        "reveal": "never",
+        "revealProblems": "onProblem",
+        "clear": true,
+        "group": "errors"
+      },
+      "problemMatcher": {
+        "owner": "eslint",
+        "pattern": "$eslint-stylish"
+      }
+    },
+    {
+      "label": "Errors Scanner",
+      "detail": "Scan for eslint and typescript errors",
+      "dependsOn": ["Typescript", "Linter"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Browser",
+      "detail": "Browser Lite: embedded browser",
+      "command": "${command:browse-lite.open}"
+    }
+  ]
+}
