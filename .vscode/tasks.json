@@ -3,6 +3,85 @@
   "tasks": [
     {
       "type": "npm",
+      "script": "dev",
+      "label": "Nuxt Dev",
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "group": "dev"
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "label": "Nuxt Nuild",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "Typescript",
+        "fileLocation": "absolute",
+        "applyTo": "allDocuments",
+        "background": {
+          "activeOnStart": true
+        },
+        "pattern": [
+          {
+            "regexp": "(ERROR|WARNING)\\(vue-tsc\\)  (.*)",
+            "severity": 1,
+            "message": 2
+          },
+          {
+            "regexp": "^ FILE  (.*):(\\d*):(\\d*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3
+          }
+        ]
+      }
+    },
+    {
+      "type": "npm",
+      "script": "eslint-watch",
+      "label": "Eslint-watch",
+      "group": "build",
+      "presentation": {
+        "group": "dev"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "eslint",
+        "source": "eslint",
+        "fileLocation": "absolute",
+        "applyTo": "allDocuments",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "File change detected",
+          "endsPattern": "(✓|✖)"
+        },
+        "base": "$eslint-stylish"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "tsc-watch",
+      "label": "Tsc-watch",
+      "group": "build",
+      "presentation": {
+        "group": "dev"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "base": "$tsc-watch"
+      }
+    },
+    {
+      "type": "npm",
       "script": "tsc",
       "label": "Typescript",
       "detail": "vue-tsc --noEmit",
@@ -13,15 +92,14 @@
         "group": "errors"
       },
       "problemMatcher": {
-        "owner": "vuetsc",
-        "pattern": "$tsc"
+        "owner": "typescript",
+        "base": "$tsc"
       }
     },
     {
       "type": "npm",
-      "script": "lint",
-      "label": "Linter",
-      "detail": "eslint",
+      "script": "eslint",
+      "label": "Eslint",
       "presentation": {
         "reveal": "never",
         "revealProblems": "onProblem",
@@ -36,7 +114,17 @@
     {
       "label": "Errors Scanner",
       "detail": "Scan for eslint and typescript errors",
-      "dependsOn": ["Typescript", "Linter"],
+      "dependsOn": ["Typescript", "Eslint"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev",
+      "detail": "nuxt dev + tsc-watch + eslint-watch",
+      "dependsOn": ["Nuxt Dev", "Tsc-watch", "Eslint-watch"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": []
     },
     {

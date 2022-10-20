@@ -66,6 +66,9 @@ export default defineNuxtConfig({
       appName: pkg.name,
     },
   },
+  typescript: {
+    typeCheck: 'build',
+  },
   build: {
     transpile: ['vuetify'],
   },
@@ -74,6 +77,7 @@ export default defineNuxtConfig({
       'process.env.DEBUG': false,
     },
   },
+
   modules: [
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) =>
