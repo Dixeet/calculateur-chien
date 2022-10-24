@@ -1,4 +1,12 @@
-import { useLocalStorage, NotFoundError } from '#imports';
+import {
+  useLocalStorage,
+  NotFoundError,
+  useObjectFieldsDescriptor,
+  type ObjectDescriptor,
+  useValidator,
+} from '#imports';
+
+const { getDefaultObject } = useObjectFieldsDescriptor();
 
 export interface Food {
   brand: string;
@@ -34,6 +42,10 @@ export interface TinCan extends Omit<Food, 'variations'> {
 export type FoodType = 'kibbles' | 'tincans';
 
 const localStorage = useLocalStorage();
+const { getRules, required, min, max } = useValidator();
+const compositionRules = getRules(required(), min(0), max(100));
+const requiredRule = getRules(required());
+const minZeroRule = getRules(min(0));
 
 export function foodApi<Type extends Food | Kibble | TinCan = Food>(
   type: FoodType,
@@ -41,24 +53,110 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
-    new(): Food {
+    getFormDescriptor(): ObjectDescriptor {
       return {
-        brand: '',
-        variety: '',
+        brand: {
+          required: true,
+          default: '',
+          rules: requiredRule,
+          label: 'Marque',
+        },
+        variety: {
+          required: true,
+          default: '',
+          rules: requiredRule,
+          label: 'Variété',
+        },
         composition: {
-          proteines: 0,
-          lipides: 0,
-          fibres: 0,
-          cendres: 0,
-          humidity: 0,
-          calcium: 0,
-          phosphore: 0,
+          fields: {
+            proteines: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              required: true,
+              rules: compositionRules,
+              label: '% de Protéines *',
+            },
+            lipides: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              required: true,
+              rules: compositionRules,
+              label: '% de Lipides / Matières Grasses *',
+            },
+            fibres: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              required: true,
+              rules: compositionRules,
+              label: '% de Fibres / Cellulose Brute *',
+            },
+            cendres: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              required: true,
+              rules: compositionRules,
+              label: '% de Cendres / Matières Minérales *',
+            },
+            humidity: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              required: true,
+              rules: compositionRules,
+              label: "% d'Humidité *",
+            },
+            dividerOne: {
+              type: 'divider',
+              custom: true,
+            },
+            calcium: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              rules: getRules(min(0), max(100)),
+              label: '% de Calcium (0 si non renseigné)',
+            },
+            phosphore: {
+              type: 'number',
+              default: 0,
+              min: 0,
+              max: 100,
+              rules: getRules(min(0), max(100)),
+              label: '% de Phosphore (0 si non renseigné)',
+            },
+          },
         },
         meta: {
-          price: 0,
+          fields: {
+            price: {
+              default: 0,
+              rules: minZeroRule,
+              type: 'number',
+              min: 0,
+              label: 'Prix',
+            },
+          },
         },
-        variations: [],
+        variations: {
+          default: [],
+          custom: true,
+          type: 'array',
+        },
       };
+    },
+
+    new() {
+      return getDefaultObject<Food>(this.getFormDescriptor());
     },
 
     async find(fn: ((entity: Type) => boolean) | null = null) {
@@ -107,16 +205,26 @@ export function kibbleApi() {
   return {
     name: kibblesName,
     ...kibble,
-    new(): Kibble {
-      const food = kibble.new();
+    getFormDescriptor(): ObjectDescriptor {
+      const foodFormDescriptor = kibble.getFormDescriptor();
       return {
-        ...food,
+        ...foodFormDescriptor,
         meta: {
-          ...food.meta,
-          weight: 0,
+          fields: {
+            ...foodFormDescriptor.meta.fields,
+            weight: {
+              default: 0,
+              type: 'number',
+              min: 0,
+              label: 'Poids du sac',
+              rules: minZeroRule,
+            },
+          },
         },
-        variations: [],
       };
+    },
+    new() {
+      return getDefaultObject<Kibble>(this.getFormDescriptor());
     },
   };
 }
@@ -128,17 +236,33 @@ export function tinCanApi() {
   return {
     name: tincanName,
     ...tincan,
-    new() {
-      const food = tincan.new();
+    getFormDescriptor(): ObjectDescriptor {
+      const foodFormDescriptor = tincan.getFormDescriptor();
       return {
-        ...food,
+        ...foodFormDescriptor,
         meta: {
-          ...food.meta,
-          numberOfCans: 0,
-          canWeight: 0,
+          fields: {
+            ...foodFormDescriptor.meta.fields,
+            canWeight: {
+              default: 0,
+              type: 'number',
+              min: 0,
+              label: "Poids d'une boite",
+              rules: minZeroRule,
+            },
+            numberOfCans: {
+              default: 0,
+              type: 'number',
+              min: 0,
+              label: 'Nombre de boite',
+              rules: minZeroRule,
+            },
+          },
         },
-        variations: [],
       };
+    },
+    new() {
+      return getDefaultObject<TinCan>(this.getFormDescriptor());
     },
   };
 }

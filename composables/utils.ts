@@ -2,7 +2,7 @@ import { unref } from '#imports';
 
 export const isClient = typeof window !== 'undefined';
 
-export function deepClone(obj: object) {
+export function deepClone(obj: object): object {
   return JSON.parse(JSON.stringify(unref(obj)));
 }
 export function byteSize(str: string | null) {

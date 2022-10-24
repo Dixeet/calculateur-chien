@@ -7,9 +7,7 @@
 </script>
 
 <template>
-  <FoodSkeleton v-slot="{ onSubmit }" :food-type="kibbleApi().name">
-    <FoodFormKibble :on-submit="onSubmit" />
-  </FoodSkeleton>
+  <FoodSkeleton :api="kibbleApi" />
 </template>
 
 <style lang="scss" scoped></style>

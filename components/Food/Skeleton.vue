@@ -1,30 +1,31 @@
 <script lang="ts" setup>
-  import { kibbleApi, tinCanApi, type FoodType } from '#imports';
-  defineProps({
-    foodType: {
-      type: String,
+  const props = defineProps({
+    api: {
+      type: Function,
       required: true,
-      validator(value: FoodType) {
-        return [kibbleApi().name, tinCanApi().name].includes(value);
-      },
     },
   });
 
-  // console.log(await kibbleApi().find((f) => f.brand === 'tata'));
+  const food = props.api().new();
+  type Food = typeof food;
+  const foodFormDescriptor = props.api().getFormDescriptor();
 
   const test = new Array(5);
 
-  function onSubmit() {
-    console.log('submit');
+  function onSubmit(food: Food) {
+    /* console.log(food); */
   }
 </script>
 
 <template>
   <BaseProgressPlaceholder color="primary">
     <div class="lg-container">
-      <slot :on-submit="onSubmit">
-        <div class="mb-n2"></div>
-      </slot>
+      <div class="mb-n2">
+        <FoodForm
+          :food="food"
+          :food-form-descriptor="foodFormDescriptor"
+          @submit="onSubmit" />
+      </div>
       <v-row class="mt-2" justify="center" justify-sm="start">
         <template v-for="(t, index) in test" :key="index">
           <v-col>

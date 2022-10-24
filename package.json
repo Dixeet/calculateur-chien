@@ -71,7 +71,9 @@
           "position": "beside",
           "ignorePattern": "ts-ignore|EXPLICIT|NOERROR|ALLOW|TODO|todo|Todo"
         }
-      ]
+      ],
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-explicit-any": "off"
     },
     "overrides": [
       {

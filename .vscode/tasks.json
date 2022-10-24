@@ -120,7 +120,7 @@
     {
       "label": "Dev",
       "detail": "nuxt dev + tsc-watch + eslint-watch",
-      "dependsOn": ["Nuxt Dev", "Tsc-watch", "Eslint-watch"],
+      "dependsOn": ["Nuxt Dev", "Eslint-watch", "Tsc-watch"],
       "group": {
         "kind": "build",
         "isDefault": true
