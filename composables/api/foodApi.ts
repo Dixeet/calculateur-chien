@@ -1,14 +1,17 @@
 import {
   useLocalStorage,
   NotFoundError,
+  DuplicateError,
   useObjectFieldsDescriptor,
   type ObjectDescriptor,
   useValidator,
+  uuid,
 } from '#imports';
 
 const { getDefaultObject } = useObjectFieldsDescriptor();
 
 export interface Food {
+  id?: string;
   brand: string;
   variety: string;
   composition: {
@@ -170,16 +173,46 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
       return data;
     },
 
-    async create(food: Type) {
+    async create(
+      food: Type,
+      checkDuplicate: ((entity: Type) => boolean) | null = (f: Type) => {
+        return (
+          (f.brand === food.brand && f.variety === food.variety) ||
+          f.id === food.id
+        );
+      },
+    ) {
+      food.id = uuid();
+      if (checkDuplicate) {
+        let found;
+        try {
+          found = await this.find(checkDuplicate);
+        } catch (e) {
+          /* Should catch NotFound */
+        }
+        if (found?.length > 0) {
+          throw new DuplicateError(
+            `Food with id : ${food.id}, or ${food.brand} ${food.variety} already exists`,
+          );
+        }
+      }
       data.push(food);
       this.updateStorage();
       return food;
     },
 
-    async delete(fn: (entity: Type) => boolean) {
+    async delete(
+      id: string | null,
+      fn: (entity: Type) => boolean = (f: Type) =>
+        f.id === id && f.variety === id,
+    ) {
       const index = data.findIndex(fn);
       if (index === -1) {
-        throw new NotFoundError(`No ${type} found to delete with this filter`);
+        throw new NotFoundError(
+          `No ${type} found to delete with this ${
+            id ? 'id : ' + id : 'filter'
+          }`,
+        );
       }
       const res = data.splice(index, 1);
       this.updateStorage();

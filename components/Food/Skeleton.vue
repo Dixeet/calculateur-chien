@@ -6,14 +6,15 @@
     },
   });
 
-  const food = props.api().new();
+  const api = props.api();
+  const food = api.new();
   type Food = typeof food;
-  const foodFormDescriptor = props.api().getFormDescriptor();
+  const foodFormDescriptor = api.getFormDescriptor();
 
   const test = new Array(5);
 
-  function onSubmit(food: Food) {
-    /* console.log(food); */
+  async function onSubmit(food: Food) {
+    await api.create(food);
   }
 </script>
 

@@ -1,4 +1,5 @@
 import { unref } from '#imports';
+import { v4 as uuidv4 } from 'uuid';
 
 export const isClient = typeof window !== 'undefined';
 
@@ -14,4 +15,8 @@ export function round(number: number, decimal = 0) {
 }
 export function simpleUid() {
   return Math.random().toString(16).slice(2);
+}
+
+export function uuid() {
+  return uuidv4();
 }
