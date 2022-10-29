@@ -5,8 +5,6 @@ import { defineNuxtPlugin } from '#imports';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     ssr: true,
     display: {
       mobileBreakpoint: 'md',
@@ -35,7 +33,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             surface: '#2D2718',
             success: '#bdcd9d',
             warning: '#ffb4ab',
-            error: '#f44336',
+            error: '#bd4138',
             info: '#9d8e81',
           },
         },

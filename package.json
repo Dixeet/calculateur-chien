@@ -14,12 +14,14 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "prepare": "nuxt prepare",
+    "nuxt-prepare": "nuxt prepare",
+    "prepare": "husky install",
     "clean": "rm -rf .nuxt .output",
     "prettier": "prettier --write .",
-    "tsc": "vue-tsc --skipLibCheck --noEmit --pretty",
+    "lint-staged": "lint-staged",
+    "tsc": "vue-tsc --skipLibCheck --noEmit",
     "tsc-watch": "yarn tsc --watch",
-    "eslint": "eslint --ignore-path .gitignore --ext .js,.ts,.vue  -f .",
+    "eslint": "eslint --ignore-path .gitignore --ext .js,.ts,.vue .",
     "eslint-watch": "esw --ignore-path .gitignore --ext .js,.ts,.vue -f .vscode/eslint-watch-stylish-formatter.js -w ."
   },
   "devDependencies": {
@@ -30,6 +32,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-vue": "^9.5.1",
     "eslint-watch": "^8.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "nuxt": ">=3.0.0-rc.11 <4.0.0",
     "prettier": "2.7.1",
     "typescript": "^4.8.4",
@@ -71,7 +75,8 @@
         "error",
         {
           "position": "beside",
-          "ignorePattern": "ts-ignore|EXPLICIT|NOERROR|ALLOW|TODO|todo|Todo"
+          "ignorePattern": "EXPLICIT|NOERROR|ALLOW|TODO|todo|Todo|--|reason",
+          "applyDefaultIgnorePatterns": false
         }
       ],
       "@typescript-eslint/no-non-null-assertion": "off",

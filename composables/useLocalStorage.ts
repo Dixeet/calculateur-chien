@@ -66,7 +66,7 @@ export default function useLocalStorage() {
             this.set('test', add(i));
           }
         } catch (e) {
-          // eslint-disable-next-line no-console
+          // eslint-disable-next-line no-console -- print results
           console.log(i - 250);
         }
       }
