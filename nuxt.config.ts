@@ -81,8 +81,9 @@ export default defineNuxtConfig({
   modules: [
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) =>
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        /* eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        -- prevent ts not being able to find HookResult
+        @ts-ignore */
         config.plugins.push(vuetify()),
       );
     },
