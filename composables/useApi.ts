@@ -15,10 +15,10 @@ export default function useApi() {
 }
 
 export {
-  kibbleApi,
-  tinCanApi,
   type FoodType,
   type Food,
   type Kibble,
   type TinCan,
 } from './api/foodApi';
+
+export { type DogDescriptionsType } from './api/dogDescriptionApi';

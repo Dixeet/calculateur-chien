@@ -56,6 +56,8 @@ interface DogDescriptions {
   lifeStages: LifeStages[];
 }
 
+export type DogDescriptionsType = keyof DogDescriptions;
+
 export default function dogDescriptionApi(name: keyof DogDescriptions) {
   const data = dogDescriptions[name];
 
@@ -64,7 +66,11 @@ export default function dogDescriptionApi(name: keyof DogDescriptions) {
       if (typeof fn === 'function') {
         const res = data.filter(fn);
         if (res.length === 0) {
-          throw new NotFoundError(`No ${name} found with this filter`);
+          throw new NotFoundError(`No ${name} found with this filter`, {
+            reason: {
+              entity: name,
+            },
+          });
         }
         return res;
       }
@@ -75,7 +81,12 @@ export default function dogDescriptionApi(name: keyof DogDescriptions) {
       if (res) {
         return res;
       }
-      throw new NotFoundError(`No ${name} found with this label "${label}"`);
+      throw new NotFoundError(`No ${name} found with this label "${label}"`, {
+        reason: {
+          entity: name,
+          searchParams: [{ name: 'label', value: label }],
+        },
+      });
     },
   };
 }

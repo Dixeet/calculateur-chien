@@ -1,20 +1,19 @@
 <script lang="ts" setup>
   const props = defineProps({
     api: {
-      type: Function,
+      type: Object,
       required: true,
     },
   });
 
-  const api = props.api();
-  const food = api.new();
+  const food = props.api.new();
   type Food = typeof food;
-  const foodFormDescriptor = api.getFormDescriptor();
+  const foodFormDescriptor = props.api.getFormDescriptor();
 
   const test = new Array(5);
 
   async function onSubmit(food: Food) {
-    await api.create(food);
+    await props.api.create(food);
   }
 </script>
 

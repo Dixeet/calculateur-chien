@@ -1,6 +1,51 @@
-export class NotFoundError extends Error {
-  constructor(message = 'Not Found', options?: { cause: Error }) {
+interface ErrorSearchParam {
+  name: string;
+  value: any;
+}
+
+interface ErrorReason {
+  entity: string;
+  searchParams?: ErrorSearchParam[];
+}
+
+interface CustomErrorOptions {
+  notify: boolean;
+  stopPropagation: boolean | 'logError';
+  timeout?: number;
+  type?: 'error' | 'warning' | 'info';
+  reason?: ErrorReason;
+}
+export class CustomError extends Error {
+  customOptions: CustomErrorOptions;
+  constructor(
+    message = 'Custom Error',
+    customOptions: CustomErrorOptions = {
+      notify: false,
+      stopPropagation: false,
+      type: 'error',
+    },
+    options?: { cause?: Error },
+  ) {
     super(message, options);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, CustomError);
+    }
+    this.name = 'CustomError';
+    this.customOptions = customOptions;
+  }
+}
+
+export class NotFoundError extends CustomError {
+  constructor(
+    message = 'Not Found',
+    customOptions?: Partial<CustomErrorOptions>,
+    options?: { cause?: Error },
+  ) {
+    super(
+      message,
+      { notify: true, stopPropagation: false, type: 'error', ...customOptions },
+      options,
+    );
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, NotFoundError);
     }
@@ -8,9 +53,17 @@ export class NotFoundError extends Error {
   }
 }
 
-export class DuplicateError extends Error {
-  constructor(message = 'Duplicate', options?: { cause: Error }) {
-    super(message, options);
+export class DuplicateError extends CustomError {
+  constructor(
+    message = 'Duplicate',
+    customOptions?: Partial<CustomErrorOptions>,
+    options?: { cause?: Error },
+  ) {
+    super(
+      message,
+      { notify: true, stopPropagation: false, type: 'error', ...customOptions },
+      options,
+    );
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, DuplicateError);
     }
@@ -24,35 +77,41 @@ export interface ValidatorError {
   value: boolean | number | string;
 }
 
-export class ValidationError extends Error {
+export class ValidationError extends CustomError {
   validator;
 
   constructor(
     message = '',
-    validator?: ValidatorError,
-    options?: { cause: Error },
+    customOptions?: Partial<CustomErrorOptions> & {
+      validator?: ValidatorError;
+    },
+    options?: { cause?: Error },
   ) {
-    if (!message && validator) {
-      switch (validator.type) {
+    if (!message && customOptions?.validator) {
+      switch (customOptions.validator.type) {
         case 'required':
-          message = `${validator.name} is required`;
+          message = `${customOptions.validator.name} is required`;
           break;
         case 'min':
-          message = `${validator.name} should be >= ${validator.value}`;
+          message = `${customOptions.validator.name} should be >= ${customOptions.validator.value}`;
           break;
         case 'max':
-          message = `${validator.name} should be <= ${validator.value}`;
+          message = `${customOptions.validator.name} should be <= ${customOptions.validator.value}`;
           break;
         case 'custom':
-          message = `${validator.name} does not respect custom validator (${validator.value})`;
+          message = `${customOptions.validator.name} does not respect custom validator (${customOptions.validator.value})`;
           break;
       }
     }
-    super(message, options);
+    super(
+      message,
+      { notify: true, stopPropagation: false, type: 'error', ...customOptions },
+      options,
+    );
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ValidationError);
     }
     this.name = 'ValidationError';
-    this.validator = validator;
+    this.validator = customOptions?.validator;
   }
 }

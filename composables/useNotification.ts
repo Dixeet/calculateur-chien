@@ -9,12 +9,15 @@ interface Notification extends VAlerProps {
   timeout?: number;
   isHtml?: boolean;
 }
+
+type NewNotification = Omit<Notification, 'id'> & { id?: string };
 type DeleteFn = (notif: Notification) => boolean;
 
 const notifications = () => useState<Notification[]>('notifications', () => []);
-const defaultNotification: Omit<Notification, 'message' | 'id'> = {
+const defaultNotification: NewNotification = {
+  message: '',
   closable: true,
-  timeout: 5000,
+  timeout: 7000,
   isHtml: false,
   variant: 'tonal',
   density: 'compact',
@@ -32,7 +35,7 @@ function deleteNotificationByFn(fn: DeleteFn) {
   }
 }
 export default function useNotification(
-  add?: (Omit<Notification, 'id'> & { id?: string }) | null,
+  add?: NewNotification | null,
   remove?: Notification | string | number | DeleteFn,
 ) {
   if (isClient) {
@@ -63,4 +66,4 @@ export default function useNotification(
   return notifications();
 }
 
-export { type Notification };
+export { type Notification, type NewNotification };

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-  import { useRuntimeConfig, useNotification } from '#imports';
+  import {
+    useRuntimeConfig,
+    useNotification,
+    onErrorCaptured,
+    useErrorHandler,
+    isClient,
+  } from '#imports';
   import { useTheme } from 'vuetify';
 
   const theme = useTheme();
@@ -9,9 +15,19 @@
   const deleteFn = (id: number) => useNotification(null, id);
   const welcomeMsg = `${config.appName} v${config.appVersion}`;
   /* eslint-disable-next-line no-console
--- Welcome message console
-   */
+  -- Welcome message console
+     */
   console.log(welcomeMsg);
+
+  onErrorCaptured((err) => {
+    const handler = useErrorHandler(err);
+    if (handler.notification) {
+      useNotification({ timeout: 7000, ...handler.notification });
+    }
+    if (isClient && handler.stopPropagation) {
+      return false;
+    }
+  });
 </script>
 
 <template>

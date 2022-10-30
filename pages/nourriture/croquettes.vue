@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-  import { definePageMeta, kibbleApi } from '#imports';
+  import { definePageMeta, useApi } from '#imports';
   definePageMeta({
     title: 'Gérer les croquettes',
     containerFluid: false,
   });
+  const api = useApi().kibbles;
 </script>
 
 <template>
-  <FoodSkeleton :api="kibbleApi" />
+  <FoodSkeleton :api="api" />
 </template>
 
 <style lang="scss" scoped></style>
