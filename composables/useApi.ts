@@ -19,6 +19,7 @@ export {
   type Food,
   type Kibble,
   type TinCan,
+  isFoodApi,
 } from './api/foodApi';
 
 export { type DogDescriptionsType } from './api/dogDescriptionApi';

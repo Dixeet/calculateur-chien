@@ -50,6 +50,12 @@ const compositionRules = getRules(required(), min(0), max(100));
 const requiredRule = getRules(required());
 const minZeroRule = getRules(min(0));
 
+type FoodApi = ReturnType<typeof foodApi>;
+
+export function isFoodApi(obj: object): obj is FoodApi {
+  return (obj as FoodApi).getFormDescriptor !== undefined;
+}
+
 export function foodApi<Type extends Food | Kibble | TinCan = Food>(
   type: FoodType,
 ) {
@@ -282,6 +288,12 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
   };
 }
 
+type KibbleApi = ReturnType<typeof kibbleApi>;
+
+export function isKibbleApi(obj: object): obj is KibbleApi {
+  return (obj as KibbleApi).name !== 'kibbles';
+}
+
 export function kibbleApi() {
   const kibblesName: FoodType = 'kibbles';
   localStorage.registerService(kibblesName);
@@ -311,6 +323,12 @@ export function kibbleApi() {
       return getDefaultObject<Kibble>(this.getFormDescriptor());
     },
   };
+}
+
+type TinCanApi = ReturnType<typeof tinCanApi>;
+
+export function isTinCanApi(obj: object): obj is TinCanApi {
+  return (obj as TinCanApi).name !== 'tincans';
 }
 
 export function tinCanApi() {

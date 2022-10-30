@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+  import { isFoodApi } from '#imports';
   const props = defineProps({
     api: {
       type: Object,
       required: true,
+      validator(api: object) {
+        return isFoodApi(api);
+      },
     },
   });
 
