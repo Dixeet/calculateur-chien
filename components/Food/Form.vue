@@ -15,54 +15,6 @@
     errorMessages: string[];
   };
 
-  const props = defineProps({
-    onSubmit: {
-      type: Function,
-      default: null,
-    },
-    food: {
-      type: Object,
-      required: true,
-    },
-    foodFormDescriptor: {
-      type: Object,
-      required: true,
-    },
-    modalOpen: {
-      type: Boolean,
-      default: false,
-    },
-  });
-  const emit = defineEmits(['submit', 'update:modalOpen']);
-
-  const { mobile } = useDisplay();
-
-  const open = computed({
-    get() {
-      return props.modalOpen;
-    },
-    set(value) {
-      emit('update:modalOpen', value);
-    },
-  });
-  const foodRef = ref<typeof props.food | null>(null);
-  const foodIdentityDescriptor = computed(() => ({
-    brand: props.foodFormDescriptor.brand,
-    variety: props.foodFormDescriptor.variety,
-  }));
-  const form = {
-    element: ref<VForm | null>(null),
-    valid: ref(false),
-    id: simpleUid(),
-    descriptionInError: ref(false),
-    compositionInError: ref(false),
-  };
-  const tab = ref<'description' | 'composition'>('description');
-
-  watchEffect(() => {
-    copyFoodProp();
-  });
-
   function copyFoodProp() {
     foodRef.value = deepClone(props.food) as Food;
     tab.value = 'description';
@@ -112,6 +64,54 @@
       emit('submit', deepClone(foodRef.value!));
     }
   }
+
+  const props = defineProps({
+    onSubmit: {
+      type: Function,
+      default: null,
+    },
+    food: {
+      type: Object,
+      required: true,
+    },
+    foodFormDescriptor: {
+      type: Object,
+      required: true,
+    },
+    modalOpen: {
+      type: Boolean,
+      default: false,
+    },
+  });
+  const emit = defineEmits(['submit', 'update:modalOpen']);
+
+  const { mobile } = useDisplay();
+
+  const open = computed({
+    get() {
+      return props.modalOpen;
+    },
+    set(value) {
+      emit('update:modalOpen', value);
+    },
+  });
+  const foodRef = ref<typeof props.food | null>(null);
+  const foodIdentityDescriptor = computed(() => ({
+    brand: props.foodFormDescriptor.brand,
+    variety: props.foodFormDescriptor.variety,
+  }));
+  const form = {
+    element: ref<VForm | null>(null),
+    valid: ref(false),
+    id: simpleUid(),
+    descriptionInError: ref(false),
+    compositionInError: ref(false),
+  };
+  const tab = ref<'description' | 'composition'>('description');
+
+  watchEffect(() => {
+    copyFoodProp();
+  });
 </script>
 
 <template>

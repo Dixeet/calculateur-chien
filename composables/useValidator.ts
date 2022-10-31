@@ -1,7 +1,6 @@
-export type Validator<T = any> = (field: T) => string | true;
+type Validator<T = any> = (field: T) => string | true;
 
-export default function useValidator() {
-
+function useValidator() {
   function required(message = '*Champs requis'): Validator {
     return function (field: any) {
       return !!field || message;
@@ -31,3 +30,6 @@ export default function useValidator() {
     getRules,
   };
 }
+
+export default useValidator;
+export { type Validator };

@@ -13,7 +13,7 @@ interface BlockProperties {
   minHeight?: string | number;
 }
 
-export default function useBlockCssProperties({
+function useBlockCssProperties({
   position,
   top,
   bottom,
@@ -84,3 +84,5 @@ export default function useBlockCssProperties({
   };
   return props;
 }
+
+export default useBlockCssProperties;

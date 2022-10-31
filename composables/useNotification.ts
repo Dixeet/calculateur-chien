@@ -1,8 +1,6 @@
 import { useState, isClient, uuid } from '#imports';
 import { type VAlert } from 'vuetify/components/VAlert';
 
-type VAlerProps = VAlert['$props'];
-
 interface Notification extends VAlerProps {
   message: string;
   id: string;
@@ -10,10 +8,10 @@ interface Notification extends VAlerProps {
   isHtml?: boolean;
 }
 
+type VAlerProps = VAlert['$props'];
 type NewNotification = Omit<Notification, 'id'> & { id?: string };
 type DeleteFn = (notif: Notification) => boolean;
 
-const notifications = () => useState<Notification[]>('notifications', () => []);
 const defaultNotification: NewNotification = {
   message: '',
   closable: true,
@@ -34,7 +32,7 @@ function deleteNotificationByFn(fn: DeleteFn) {
     deleteNotification(index);
   }
 }
-export default function useNotification(
+function useNotification(
   add?: NewNotification | null,
   remove?: Notification | string | number | DeleteFn,
 ) {
@@ -66,4 +64,7 @@ export default function useNotification(
   return notifications();
 }
 
+const notifications = () => useState<Notification[]>('notifications', () => []);
+
+export default useNotification;
 export { type Notification, type NewNotification };

@@ -1,8 +1,5 @@
 import { reactive, ref, watch, byteSize, isClient } from '#imports';
 
-const servicesRegistered: string[] = reactive([]);
-const storageUsed = ref(getStorageUsage());
-
 function getStorageUsage() {
   let res = 0;
   if (isClient) {
@@ -13,9 +10,7 @@ function getStorageUsage() {
   return res;
 }
 
-watch(servicesRegistered, () => (storageUsed.value = getStorageUsage()));
-
-export default function useLocalStorage() {
+function useLocalStorage() {
   return {
     storageUsed,
     registerService(name: string) {
@@ -73,3 +68,9 @@ export default function useLocalStorage() {
     },
   };
 }
+
+const servicesRegistered: string[] = reactive([]);
+const storageUsed = ref(getStorageUsage());
+watch(servicesRegistered, () => (storageUsed.value = getStorageUsage()));
+
+export default useLocalStorage;

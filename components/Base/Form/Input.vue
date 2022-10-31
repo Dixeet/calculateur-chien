@@ -18,10 +18,10 @@
       default: null,
     },
   });
-  const emit = defineEmits(['update:modelValue']);
   function update(value: string | number) {
     emit('update:modelValue', value);
   }
+  const emit = defineEmits(['update:modelValue']);
 </script>
 <template>
   <v-divider v-if="field.type === 'divider'" class="mb-5" />

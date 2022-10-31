@@ -68,5 +68,6 @@ function useObjectFieldsDescriptor() {
     getDefaultObject,
   };
 }
+
 export default useObjectFieldsDescriptor;
 export { type ObjectDescriptor, type FieldDescriptor };

@@ -8,17 +8,6 @@
   } from '#imports';
   import { useTheme } from 'vuetify';
 
-  const theme = useTheme();
-  const config = useRuntimeConfig();
-
-  const notifications = useNotification();
-  const deleteFn = (id: number) => useNotification(null, id);
-  const welcomeMsg = `${config.appName} v${config.appVersion}`;
-  /* eslint-disable-next-line no-console
-  -- Welcome message console
-     */
-  console.log(welcomeMsg);
-
   onErrorCaptured((err) => {
     const handler = useErrorHandler(err);
     if (handler.notification) {
@@ -28,6 +17,17 @@
       return false;
     }
   });
+
+  const theme = useTheme();
+  const config = useRuntimeConfig();
+  const notifications = useNotification();
+
+  const deleteFn = (id: number) => useNotification(null, id);
+  const welcomeMsg = `${config.appName} v${config.appVersion}`;
+  /* eslint-disable-next-line no-console
+  -- Welcome message console
+     */
+  console.log(welcomeMsg);
 </script>
 
 <template>

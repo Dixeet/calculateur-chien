@@ -1,23 +1,6 @@
 <script lang="ts" setup>
   import { deepClone, isFoodApi, ref, type Food } from '#imports';
 
-  const props = defineProps({
-    api: {
-      type: Object,
-      required: true,
-      validator(api: object) {
-        return isFoodApi(api);
-      },
-    },
-  });
-
-  const newFood: Food = props.api.new();
-  const foodFormDescriptor = props.api.getFormDescriptor();
-  const modalOpen = ref(false);
-  const food = ref<Food>(deepClone(newFood));
-
-  const test = new Array(5);
-
   async function onSubmit(food: Food) {
     try {
       await props.api.create(food);
@@ -45,6 +28,23 @@
   function closeForm() {
     modalOpen.value = false;
   }
+
+  const props = defineProps({
+    api: {
+      type: Object,
+      required: true,
+      validator(api: object) {
+        return isFoodApi(api);
+      },
+    },
+  });
+
+  const newFood: Food = props.api.new();
+  const foodFormDescriptor = props.api.getFormDescriptor();
+  const modalOpen = ref(false);
+  const food = ref<Food>(deepClone(newFood));
+
+  const test = new Array(5);
 </script>
 
 <template>

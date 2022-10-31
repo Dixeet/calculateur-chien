@@ -2,12 +2,6 @@
   import { computed, round, useLocalStorage } from '#imports';
   import { useTheme } from 'vuetify';
 
-  const emit = defineEmits(['close']);
-  const storageUsed = computed(() => {
-    const res = useLocalStorage().storageUsed.value / 1024;
-    return res < 1000 ? `${round(res, 1)}KB` : `${round(res / 1000, 1)}MB`;
-  });
-
   interface NavElements {
     text?: string;
     icon?: string;
@@ -15,6 +9,23 @@
     type?: string;
     textClass?: string | string[] | object;
   }
+
+  function toggleTheme() {
+    theme.global.name.value = theme.global.current.value.dark
+      ? 'customLight'
+      : 'customDark';
+  }
+
+  function emitCloseEvent() {
+    emit('close');
+  }
+
+  const emit = defineEmits(['close']);
+
+  const storageUsed = computed(() => {
+    const res = useLocalStorage().storageUsed.value / 1024;
+    return res < 1000 ? `${round(res, 1)}KB` : `${round(res / 1000, 1)}MB`;
+  });
   const navElements: NavElements[] = [
     { text: 'Accueil', icon: 'fa-solid fa-house', to: '/' },
     { text: 'Calculateurs', type: 'list-subheader' },
@@ -43,17 +54,7 @@
       to: '',
     },
   ];
-
-  function emitCloseEvent() {
-    emit('close');
-  }
-
   const theme = useTheme();
-  function toggleTheme() {
-    theme.global.name.value = theme.global.current.value.dark
-      ? 'customLight'
-      : 'customDark';
-  }
 </script>
 <template>
   <div class="d-flex flex-row-reverse pa-1">

@@ -15,7 +15,13 @@ interface CustomErrorOptions {
   type?: 'error' | 'warning' | 'info';
   reason?: ErrorReason;
 }
-export class CustomError extends Error {
+
+interface ValidatorError {
+  name: string;
+  type: 'required' | 'min' | 'max' | 'custom';
+  value: boolean | number | string;
+}
+class CustomError extends Error {
   customOptions: CustomErrorOptions;
   constructor(
     message = 'Custom Error',
@@ -35,7 +41,7 @@ export class CustomError extends Error {
   }
 }
 
-export class NotFoundError extends CustomError {
+class NotFoundError extends CustomError {
   constructor(
     message = 'Not Found',
     customOptions?: Partial<CustomErrorOptions>,
@@ -53,7 +59,7 @@ export class NotFoundError extends CustomError {
   }
 }
 
-export class DuplicateError extends CustomError {
+class DuplicateError extends CustomError {
   constructor(
     message = 'Duplicate',
     customOptions?: Partial<CustomErrorOptions>,
@@ -71,13 +77,7 @@ export class DuplicateError extends CustomError {
   }
 }
 
-export interface ValidatorError {
-  name: string;
-  type: 'required' | 'min' | 'max' | 'custom';
-  value: boolean | number | string;
-}
-
-export class ValidationError extends CustomError {
+class ValidationError extends CustomError {
   validator;
 
   constructor(
@@ -115,3 +115,11 @@ export class ValidationError extends CustomError {
     this.validator = customOptions?.validator;
   }
 }
+
+export {
+  CustomError,
+  NotFoundError,
+  DuplicateError,
+  ValidationError,
+  type ValidatorError,
+};

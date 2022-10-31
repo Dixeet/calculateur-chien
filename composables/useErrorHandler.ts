@@ -45,7 +45,7 @@ function entityToString(entity: FoodType | DogDescriptionsType) {
   }
 }
 
-export default function useErrorHandler(error: Error) {
+function useErrorHandler(error: Error) {
   const res: ErrorHandler = {
     stopPropagation: false,
     err: error,
@@ -111,3 +111,5 @@ export default function useErrorHandler(error: Error) {
 
   return res;
 }
+
+export default useErrorHandler;

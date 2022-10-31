@@ -1,7 +1,7 @@
 import dogDescriptionApi from './api/dogDescriptionApi';
 import { kibbleApi, tinCanApi } from './api/foodApi';
 
-export default function useApi() {
+function useApi() {
   return {
     activities: dogDescriptionApi('activities'),
     sterilizationStatus: dogDescriptionApi('sterilizationStatus'),
@@ -14,6 +14,7 @@ export default function useApi() {
   };
 }
 
+export default useApi;
 export {
   type FoodType,
   type Food,
@@ -21,5 +22,4 @@ export {
   type TinCan,
   isFoodApi,
 } from './api/foodApi';
-
 export { type DogDescriptionsType } from './api/dogDescriptionApi';

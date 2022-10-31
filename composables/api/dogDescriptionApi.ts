@@ -56,9 +56,9 @@ interface DogDescriptions {
   lifeStages: LifeStages[];
 }
 
-export type DogDescriptionsType = keyof DogDescriptions;
+type DogDescriptionsType = keyof DogDescriptions;
 
-export default function dogDescriptionApi(name: keyof DogDescriptions) {
+function dogDescriptionApi(name: keyof DogDescriptions) {
   const data = dogDescriptions[name];
 
   return {
@@ -90,3 +90,6 @@ export default function dogDescriptionApi(name: keyof DogDescriptions) {
     },
   };
 }
+
+export default dogDescriptionApi;
+export { type DogDescriptionsType };

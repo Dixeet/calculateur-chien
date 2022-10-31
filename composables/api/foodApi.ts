@@ -8,9 +8,7 @@ import {
   uuid,
 } from '#imports';
 
-const { getDefaultObject } = useObjectFieldsDescriptor();
-
-export interface Food {
+interface Food {
   id?: string;
   brand: string;
   variety: string;
@@ -27,14 +25,14 @@ export interface Food {
   variations?: Food['meta'][];
 }
 
-export interface Kibble extends Omit<Food, 'variations'> {
+interface Kibble extends Omit<Food, 'variations'> {
   meta?: Food['meta'] & {
     weight?: number;
   };
   variations?: Kibble['meta'][];
 }
 
-export interface TinCan extends Omit<Food, 'variations'> {
+interface TinCan extends Omit<Food, 'variations'> {
   meta?: Food['meta'] & {
     numberOfCans?: number;
     canWeight?: number;
@@ -42,23 +40,16 @@ export interface TinCan extends Omit<Food, 'variations'> {
   variations?: TinCan['meta'][];
 }
 
-export type FoodType = 'kibbles' | 'tincans';
-
-const localStorage = useLocalStorage();
-const { getRules, required, min, max } = useValidator();
-const compositionRules = getRules(required(), min(0), max(100));
-const requiredRule = getRules(required());
-const minZeroRule = getRules(min(0));
-
+type FoodType = 'kibbles' | 'tincans';
+type TinCanApi = ReturnType<typeof tinCanApi>;
 type FoodApi = ReturnType<typeof foodApi>;
+type KibbleApi = ReturnType<typeof kibbleApi>;
 
-export function isFoodApi(obj: object): obj is FoodApi {
+function isFoodApi(obj: object): obj is FoodApi {
   return (obj as FoodApi).getFormDescriptor !== undefined;
 }
 
-export function foodApi<Type extends Food | Kibble | TinCan = Food>(
-  type: FoodType,
-) {
+function foodApi<Type extends Food | Kibble | TinCan = Food>(type: FoodType) {
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
@@ -288,13 +279,11 @@ export function foodApi<Type extends Food | Kibble | TinCan = Food>(
   };
 }
 
-type KibbleApi = ReturnType<typeof kibbleApi>;
-
-export function isKibbleApi(obj: object): obj is KibbleApi {
+function isKibbleApi(obj: object): obj is KibbleApi {
   return (obj as KibbleApi).name !== 'kibbles';
 }
 
-export function kibbleApi() {
+function kibbleApi() {
   const kibblesName: FoodType = 'kibbles';
   localStorage.registerService(kibblesName);
   const kibble = foodApi<Kibble>(kibblesName);
@@ -325,13 +314,11 @@ export function kibbleApi() {
   };
 }
 
-type TinCanApi = ReturnType<typeof tinCanApi>;
-
-export function isTinCanApi(obj: object): obj is TinCanApi {
+function isTinCanApi(obj: object): obj is TinCanApi {
   return (obj as TinCanApi).name !== 'tincans';
 }
 
-export function tinCanApi() {
+function tinCanApi() {
   const tincanName: FoodType = 'tincans';
   localStorage.registerService(tincanName);
   const tincan = foodApi<TinCan>(tincanName);
@@ -368,3 +355,23 @@ export function tinCanApi() {
     },
   };
 }
+
+const { getDefaultObject } = useObjectFieldsDescriptor();
+const localStorage = useLocalStorage();
+const { getRules, required, min, max } = useValidator();
+const compositionRules = getRules(required(), min(0), max(100));
+const requiredRule = getRules(required());
+const minZeroRule = getRules(min(0));
+
+export {
+  isFoodApi,
+  foodApi,
+  isKibbleApi,
+  kibbleApi,
+  isTinCanApi,
+  tinCanApi,
+  type FoodType,
+  type Food,
+  type Kibble,
+  type TinCan,
+};

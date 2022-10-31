@@ -6,6 +6,16 @@
     computed,
   } from '#imports';
 
+  function closeTimeout(notif: Notification) {
+    if (notif.timeout && notif.timeout > -1) {
+      setTimeout(() => close(notif), notif.timeout);
+    }
+  }
+  function close(notif: Notification) {
+    const res = props.deleteFn(notif.id, [...props.modelValue]);
+    emit('update:modelValue', res);
+  }
+
   const props = defineProps({
     ...useBlockCssProperties({
       zIndex: 3000,
@@ -58,6 +68,7 @@
     },
   });
   const emit = defineEmits(['update:modelValue']);
+
   const notifications = computed(() => {
     return props.modelValue.map((notif: Notification) => {
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,15 +88,6 @@
       };
     });
   });
-  function closeTimeout(notif: Notification) {
-    if (notif.timeout && notif.timeout > -1) {
-      setTimeout(() => close(notif), notif.timeout);
-    }
-  }
-  function close(notif: Notification) {
-    const res = props.deleteFn(notif.id, [...props.modelValue]);
-    emit('update:modelValue', res);
-  }
 </script>
 <template>
   <div
