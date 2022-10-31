@@ -1,9 +1,12 @@
 import { unref } from '#imports';
+import type { Ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
 export const isClient = typeof window !== 'undefined';
 
-export function deepClone(obj: object): object {
+export function deepClone<T extends object | Ref<T> = object>(
+  obj: T | Ref<T>,
+): T {
   return JSON.parse(JSON.stringify(unref(obj)));
 }
 export function byteSize(str: string | null) {

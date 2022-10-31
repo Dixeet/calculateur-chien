@@ -16,7 +16,7 @@
     "preview": "nuxt preview",
     "nuxt-prepare": "nuxt prepare",
     "prepare": "husky install",
-    "clean": "rm -rf .nuxt .output",
+    "clean": "rm -rf .nuxt .output dist",
     "prettier": "prettier --write .",
     "lint-staged": "lint-staged",
     "tsc": "vue-tsc --skipLibCheck --noEmit",

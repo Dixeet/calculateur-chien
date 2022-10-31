@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-  import { isFoodApi } from '#imports';
+  import { deepClone, isFoodApi, ref, type Food } from '#imports';
+
   const props = defineProps({
     api: {
       type: Object,
@@ -10,14 +11,39 @@
     },
   });
 
-  const food = props.api.new();
-  type Food = typeof food;
+  const newFood: Food = props.api.new();
   const foodFormDescriptor = props.api.getFormDescriptor();
+  const modalOpen = ref(false);
+  const food = ref<Food>(deepClone(newFood));
 
   const test = new Array(5);
 
   async function onSubmit(food: Food) {
-    await props.api.create(food);
+    try {
+      await props.api.create(food);
+      closeForm();
+    } catch (e) {
+      if (e.name === 'DuplicateError') {
+        openForm();
+        e.customOptions.stopPropagation = 'logError';
+      }
+      throw e;
+    }
+  }
+
+  function setFood(f: Food) {
+    food.value = deepClone(f);
+  }
+
+  function openForm(set?: Food | 'new') {
+    if (set) {
+      setFood(set === 'new' ? newFood : set);
+    }
+    modalOpen.value = true;
+  }
+
+  function closeForm() {
+    modalOpen.value = false;
   }
 </script>
 
@@ -25,7 +51,15 @@
   <BaseProgressPlaceholder color="primary">
     <div class="lg-container">
       <div class="mb-n2">
+        <v-btn
+          variant="outlined"
+          color="primary"
+          prepend-icon="fa-solid fa-plus"
+          @click.stop="openForm('new')"
+          >Ajouter
+        </v-btn>
         <FoodForm
+          v-model:modal-open="modalOpen"
           :food="food"
           :food-form-descriptor="foodFormDescriptor"
           @submit="onSubmit" />

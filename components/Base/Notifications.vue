@@ -8,7 +8,7 @@
 
   const props = defineProps({
     ...useBlockCssProperties({
-      zIndex: 2200,
+      zIndex: 3000,
       maxWidth: '400px',
       minWidth: '300px',
     }),
@@ -88,7 +88,9 @@
   }
 </script>
 <template>
-  <div class="app-notifications">
+  <div
+    v-show="notifications && notifications.length > 0"
+    class="app-notifications">
     <v-container>
       <transition-group :name="transition">
         <v-alert
@@ -145,6 +147,9 @@
       height: v-bind('props.height');
       max-height: v-bind('props.maxHeight');
       min-height: v-bind('props.minHeight');
+      @media (max-width: 600px) {
+        top: 0;
+      }
       &__alert {
         .v-alert__close {
           margin-inline-start: 15px;

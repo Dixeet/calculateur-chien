@@ -28,19 +28,23 @@
       type: Object,
       required: true,
     },
-    resetOnOpen: {
+    modalOpen: {
       type: Boolean,
       default: false,
     },
   });
-  defineExpose({
-    openForm,
-  });
-  const emit = defineEmits(['submit']);
+  const emit = defineEmits(['submit', 'update:modalOpen']);
 
   const { mobile } = useDisplay();
 
-  const open = ref(false);
+  const open = computed({
+    get() {
+      return props.modalOpen;
+    },
+    set(value) {
+      emit('update:modalOpen', value);
+    },
+  });
   const foodRef = ref<typeof props.food | null>(null);
   const foodIdentityDescriptor = computed(() => ({
     brand: props.foodFormDescriptor.brand,
@@ -61,12 +65,10 @@
 
   function copyFoodProp() {
     foodRef.value = deepClone(props.food) as Food;
+    tab.value = 'description';
   }
 
   function openForm() {
-    if (props.resetOnOpen) {
-      copyFoodProp();
-    }
     open.value = true;
   }
 
@@ -108,34 +110,38 @@
     parseFormErrors(formValidation.errors);
     if (formValidation.valid) {
       emit('submit', deepClone(foodRef.value!));
-      closeForm();
     }
   }
 </script>
 
 <template>
   <client-only>
-    <v-dialog v-model="open" scrollable :fullscreen="mobile">
-      <template #activator>
-        <v-btn
-          variant="outlined"
-          color="primary"
-          prepend-icon="fa-solid fa-plus"
-          @click.stop="openForm"
-          >Ajouter
-        </v-btn>
-      </template>
+    <v-dialog
+      v-model="open"
+      scrollable
+      :fullscreen="mobile"
+      :persistent="mobile">
       <v-card class="mx-auto" :width="mobile ? undefined : 600">
         <v-card-item>
           <v-card-title class="d-flex justify-space-between align-center">
             <span>Croquette</span>
-            <v-btn
-              aria-label="fermer le formulaire"
-              variant="text"
-              class="ml-3"
-              icon="fa-solid fa-xmark"
-              density="comfortable"
-              @click="closeForm" />
+            <div>
+              <v-btn
+                class="ml-2 text-caption"
+                prepend-icon="fa-solid fa-retweet"
+                variant="text"
+                density="compact"
+                @click="copyFoodProp">
+                Reset
+              </v-btn>
+              <v-btn
+                aria-label="fermer le formulaire"
+                variant="text"
+                class="ml-0"
+                icon="fa-solid fa-xmark"
+                density="comfortable"
+                @click="closeForm" />
+            </div>
           </v-card-title>
           <v-divider class="mb-2" />
           <v-tabs v-model="tab" fixed-tabs>
@@ -143,14 +149,14 @@
               value="description"
               :color="form.descriptionInError.value ? 'error' : null"
               :class="form.descriptionInError.value ? 'text-error' : null"
-              >Description</v-tab
-            >
+              title="Description"></v-tab>
             <v-tab
               value="composition"
+              title="Composition"
               :color="form.compositionInError.value ? 'error' : null"
-              :class="form.compositionInError.value ? 'text-error' : null"
-              >Composition</v-tab
-            >
+              :class="
+                form.compositionInError.value ? 'text-error' : null
+              "></v-tab>
           </v-tabs>
         </v-card-item>
         <v-form
