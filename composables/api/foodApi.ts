@@ -1,46 +1,18 @@
 import {
-  useLocalStorage,
+  uuid,
   NotFoundError,
   DuplicateError,
+  useLocalStorage,
   useObjectFieldsDescriptor,
-  type ObjectDescriptor,
-  useValidator,
-  uuid,
+  useFood,
+  useKibble,
+  useTinCan,
+  type Food,
+  type Kibble,
+  type TinCan,
+  type FoodType,
 } from '#imports';
 
-interface Food {
-  id?: string;
-  brand: string;
-  variety: string;
-  composition: {
-    proteines: number;
-    lipides: number;
-    fibres: number;
-    cendres: number;
-    humidity: number;
-    calcium?: number;
-    phosphore?: number;
-  };
-  meta?: { price?: number };
-  variations?: Food['meta'][];
-}
-
-interface Kibble extends Omit<Food, 'variations'> {
-  meta?: Food['meta'] & {
-    weight?: number;
-  };
-  variations?: Kibble['meta'][];
-}
-
-interface TinCan extends Omit<Food, 'variations'> {
-  meta?: Food['meta'] & {
-    numberOfCans?: number;
-    canWeight?: number;
-  };
-  variations?: TinCan['meta'][];
-}
-
-type FoodType = 'kibbles' | 'tincans';
 type TinCanApi = ReturnType<typeof tinCanApi>;
 type FoodApi = ReturnType<typeof foodApi>;
 type KibbleApi = ReturnType<typeof kibbleApi>;
@@ -53,106 +25,8 @@ function foodApi<Type extends Food | Kibble | TinCan = Food>(type: FoodType) {
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
-    getFormDescriptor(): ObjectDescriptor {
-      return {
-        brand: {
-          required: true,
-          default: '',
-          rules: requiredRule,
-          label: 'Marque',
-        },
-        variety: {
-          required: true,
-          default: '',
-          rules: requiredRule,
-          label: 'Variété',
-        },
-        composition: {
-          fields: {
-            proteines: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              required: true,
-              rules: compositionRules,
-              label: '% de Protéines *',
-            },
-            lipides: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              required: true,
-              rules: compositionRules,
-              label: '% de Lipides / Matières Grasses *',
-            },
-            fibres: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              required: true,
-              rules: compositionRules,
-              label: '% de Fibres / Cellulose Brute *',
-            },
-            cendres: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              required: true,
-              rules: compositionRules,
-              label: '% de Cendres / Matières Minérales *',
-            },
-            humidity: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              required: true,
-              rules: compositionRules,
-              label: "% d'Humidité *",
-            },
-            dividerOne: {
-              type: 'divider',
-              custom: true,
-            },
-            calcium: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              rules: getRules(min(0), max(100)),
-              label: '% de Calcium (0 si non renseigné)',
-            },
-            phosphore: {
-              type: 'number',
-              default: 0,
-              min: 0,
-              max: 100,
-              rules: getRules(min(0), max(100)),
-              label: '% de Phosphore (0 si non renseigné)',
-            },
-          },
-        },
-        meta: {
-          fields: {
-            price: {
-              default: 0,
-              rules: minZeroRule,
-              type: 'number',
-              min: 0,
-              label: 'Prix',
-            },
-          },
-        },
-        variations: {
-          default: [],
-          custom: true,
-          type: 'array',
-        },
-      };
+    getFormDescriptor() {
+      return useFood().objectDescriptor;
     },
 
     new() {
@@ -193,7 +67,7 @@ function foodApi<Type extends Food | Kibble | TinCan = Food>(type: FoodType) {
 
     async create(
       food: Type,
-      checkDuplicate: ((entity: Type) => boolean) | null = (f: Type) => {
+      checkForDuplicate: ((entity: Type) => boolean) | null = (f: Type) => {
         return (
           (f.brand === food.brand && f.variety === food.variety) ||
           f.id === food.id
@@ -201,31 +75,30 @@ function foodApi<Type extends Food | Kibble | TinCan = Food>(type: FoodType) {
       },
     ) {
       food.id = uuid();
-      if (checkDuplicate) {
-        let found;
+      if (checkForDuplicate) {
         try {
-          found = await this.find(checkDuplicate);
+          const found = await this.find(checkForDuplicate);
+          if (found?.length > 0) {
+            const isIdDuplicate = found[0].id === food.id;
+            const message = isIdDuplicate
+              ? `Food with id : ${food.id} already exists`
+              : `${food.brand} ${food.variety} already exists`;
+            throw new DuplicateError(message, {
+              reason: {
+                entity: type,
+                searchParams: isIdDuplicate
+                  ? [{ name: 'id', value: food.id }]
+                  : [
+                      { name: 'marque', value: food.brand },
+                      { name: 'variété', value: food.variety },
+                    ],
+              },
+            });
+          }
         } catch (e) {
           if (!(e instanceof NotFoundError)) {
             throw e;
           }
-        }
-        if (found?.length > 0) {
-          const isIdDuplicate = found[0].id === food.id;
-          const message = isIdDuplicate
-            ? `Food with id : ${food.id} already exists`
-            : `${food.brand} ${food.variety} already exists`;
-          throw new DuplicateError(message, {
-            reason: {
-              entity: type,
-              searchParams: isIdDuplicate
-                ? [{ name: 'id', value: food.id }]
-                : [
-                    { name: 'marque', value: food.brand },
-                    { name: 'variété', value: food.variety },
-                  ],
-            },
-          });
         }
       }
       data.push(food);
@@ -290,23 +163,8 @@ function kibbleApi() {
   return {
     name: kibblesName,
     ...kibble,
-    getFormDescriptor(): ObjectDescriptor {
-      const foodFormDescriptor = kibble.getFormDescriptor();
-      return {
-        ...foodFormDescriptor,
-        meta: {
-          fields: {
-            ...foodFormDescriptor.meta.fields,
-            weight: {
-              default: 0,
-              type: 'number',
-              min: 0,
-              label: 'Poids du sac',
-              rules: minZeroRule,
-            },
-          },
-        },
-      };
+    getFormDescriptor() {
+      return useKibble().objectDescriptor;
     },
     new() {
       return getDefaultObject<Kibble>(this.getFormDescriptor());
@@ -325,30 +183,8 @@ function tinCanApi() {
   return {
     name: tincanName,
     ...tincan,
-    getFormDescriptor(): ObjectDescriptor {
-      const foodFormDescriptor = tincan.getFormDescriptor();
-      return {
-        ...foodFormDescriptor,
-        meta: {
-          fields: {
-            ...foodFormDescriptor.meta.fields,
-            canWeight: {
-              default: 0,
-              type: 'number',
-              min: 0,
-              label: "Poids d'une boite",
-              rules: minZeroRule,
-            },
-            numberOfCans: {
-              default: 0,
-              type: 'number',
-              min: 0,
-              label: 'Nombre de boite',
-              rules: minZeroRule,
-            },
-          },
-        },
-      };
+    getFormDescriptor() {
+      return useTinCan().objectDescriptor;
     },
     new() {
       return getDefaultObject<TinCan>(this.getFormDescriptor());
@@ -356,12 +192,8 @@ function tinCanApi() {
   };
 }
 
-const { getDefaultObject } = useObjectFieldsDescriptor();
 const localStorage = useLocalStorage();
-const { getRules, required, min, max } = useValidator();
-const compositionRules = getRules(required(), min(0), max(100));
-const requiredRule = getRules(required());
-const minZeroRule = getRules(min(0));
+const { getDefaultObject } = useObjectFieldsDescriptor();
 
 export {
   isFoodApi,
@@ -370,9 +202,5 @@ export {
   kibbleApi,
   isTinCanApi,
   tinCanApi,
-  type FoodType,
-  type Food,
-  type Kibble,
-  type TinCan,
   type FoodApi,
 };

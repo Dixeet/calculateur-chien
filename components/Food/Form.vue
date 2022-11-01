@@ -7,6 +7,7 @@
     watchEffect,
     computed,
     type Food,
+    type WithoutId,
     type ObjectDescriptor,
   } from '#imports';
   import { type VForm } from 'vuetify/components/VForm';
@@ -76,11 +77,11 @@
       default: null,
     },
     food: {
-      type: Object as PropType<Food>,
+      type: Object as PropType<WithoutId<Food>>,
       required: true,
     },
     foodFormDescriptor: {
-      type: Object as PropType<ObjectDescriptor>,
+      type: Object as PropType<ObjectDescriptor<WithoutId<Food>>>,
       required: true,
     },
     modalOpen: {
@@ -100,7 +101,7 @@
       emit('update:modalOpen', value);
     },
   });
-  const foodRef = ref<Food>(deepClone(props.food));
+  const foodRef = ref<WithoutId<Food>>(deepClone(props.food));
   const foodIdentityDescriptor = computed(() => ({
     brand: props.foodFormDescriptor.brand,
     variety: props.foodFormDescriptor.variety,
@@ -177,7 +178,7 @@
                     v-for="(field, key) in foodIdentityDescriptor"
                     :id="`description-${key}-${form.id}`"
                     :key="key"
-                    v-model="foodRef![key]"
+                    v-model="foodRef[key]"
                     class="px-3"
                     cols="12"
                     :field="field" />
@@ -197,7 +198,7 @@
                   <v-divider class="mb-3 mt-1" />
                   <v-row no-gutters class="mx-n3">
                     <BaseFormInput
-                      v-for="(field, key) in foodFormDescriptor.meta.fields"
+                      v-for="(field, key) in foodFormDescriptor.meta"
                       :id="`description-meta-${key}-${form.id}`"
                       :key="key"
                       v-model="foodRef!.meta![key as keyof Food['meta']]"
@@ -208,7 +209,7 @@
                   </v-row>
                 </div>
                 <div
-                  v-for="(variation, index) in foodRef!.variations"
+                  v-for="(variation, index) in foodRef.variations"
                   :key="index">
                   <div class="d-flex justify-space-between align-center my-n2">
                     <span class="text-subtitle-2 app--is-opaque"
@@ -225,7 +226,7 @@
                   <v-divider class="mb-3 mt-1" />
                   <v-row no-gutters class="mx-n3">
                     <BaseFormInput
-                      v-for="(field, key) in foodFormDescriptor.meta.fields"
+                      v-for="(field, key) in foodFormDescriptor.meta"
                       :id="`description-variation${index}-${key}-${form.id}`"
                       :key="key"
                       v-model="variation![key as keyof Food['meta']]"
@@ -239,11 +240,10 @@
               <v-window-item eager value="composition">
                 <v-row no-gutters class="mx-n3">
                   <BaseFormInput
-                    v-for="(field, key) in foodFormDescriptor.composition
-                      .fields"
+                    v-for="(field, key) in foodFormDescriptor.composition"
                     :id="`composition-${key}-${form.id}`"
                     :key="key"
-                    v-model="foodRef!.composition[key as keyof Food['composition']]"
+                    v-model="foodRef.composition[key as keyof Food['composition']]"
                     class="px-3"
                     cols="12"
                     :field="field"
