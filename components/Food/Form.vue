@@ -5,10 +5,12 @@
     simpleUid,
     ref,
     watchEffect,
-    type Food,
     computed,
+    type Food,
+    type ObjectDescriptor,
   } from '#imports';
   import { type VForm } from 'vuetify/components/VForm';
+  import { PropType } from 'vue';
 
   type FormError = {
     id: string | number;
@@ -16,12 +18,8 @@
   };
 
   function copyFoodProp() {
-    foodRef.value = deepClone(props.food) as Food;
+    foodRef.value = deepClone(props.food);
     tab.value = 'description';
-  }
-
-  function openForm() {
-    open.value = true;
   }
 
   function closeForm() {
@@ -29,11 +27,18 @@
   }
 
   function addVariation() {
-    foodRef.value?.variations.push(deepClone(foodRef.value?.meta));
+    if (!foodRef.value.variations) {
+      foodRef.value!.variations = [];
+    }
+    if (foodRef.value.meta) {
+      foodRef.value?.variations.push(deepClone(foodRef.value.meta));
+    }
   }
 
   function deleteVariation(index: number) {
-    foodRef.value?.variations.splice(index, 1);
+    if (foodRef.value.variations) {
+      foodRef.value?.variations.splice(index, 1);
+    }
   }
 
   function parseFormErrors(errors: FormError[]) {
@@ -71,11 +76,11 @@
       default: null,
     },
     food: {
-      type: Object,
+      type: Object as PropType<Food>,
       required: true,
     },
     foodFormDescriptor: {
-      type: Object,
+      type: Object as PropType<ObjectDescriptor>,
       required: true,
     },
     modalOpen: {
@@ -95,7 +100,7 @@
       emit('update:modalOpen', value);
     },
   });
-  const foodRef = ref<typeof props.food | null>(null);
+  const foodRef = ref<Food>(deepClone(props.food));
   const foodIdentityDescriptor = computed(() => ({
     brand: props.foodFormDescriptor.brand,
     variety: props.foodFormDescriptor.variety,
@@ -195,7 +200,7 @@
                       v-for="(field, key) in foodFormDescriptor.meta.fields"
                       :id="`description-meta-${key}-${form.id}`"
                       :key="key"
-                      v-model="foodRef!.meta![key]"
+                      v-model="foodRef!.meta![key as keyof Food['meta']]"
                       class="px-3"
                       cols="12"
                       sm="6"
@@ -223,7 +228,7 @@
                       v-for="(field, key) in foodFormDescriptor.meta.fields"
                       :id="`description-variation${index}-${key}-${form.id}`"
                       :key="key"
-                      v-model="variation[key]"
+                      v-model="variation![key as keyof Food['meta']]"
                       class="px-3"
                       cols="12"
                       sm="6"
@@ -238,7 +243,7 @@
                       .fields"
                     :id="`composition-${key}-${form.id}`"
                     :key="key"
-                    v-model="foodRef!.composition[key]"
+                    v-model="foodRef!.composition[key as keyof Food['composition']]"
                     class="px-3"
                     cols="12"
                     :field="field"

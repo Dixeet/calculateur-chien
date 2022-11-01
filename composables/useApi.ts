@@ -16,10 +16,11 @@ function useApi() {
 
 export default useApi;
 export {
+  isFoodApi,
   type FoodType,
   type Food,
   type Kibble,
   type TinCan,
-  isFoodApi,
+  type FoodApi,
 } from './api/foodApi';
 export { type DogDescriptionsType } from './api/dogDescriptionApi';

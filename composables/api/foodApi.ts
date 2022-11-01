@@ -374,4 +374,5 @@ export {
   type Food,
   type Kibble,
   type TinCan,
+  type FoodApi,
 };
