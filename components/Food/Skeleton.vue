@@ -1,10 +1,20 @@
 <script lang="ts" setup>
-  import { deepClone, isFoodApi, ref, type Food } from '#imports';
+  import {
+    deepClone,
+    isClient,
+    isFoodApi,
+    ref,
+    toRef,
+    type Food,
+    type FoodApi,
+  } from '#imports';
+  import { PropType } from 'vue';
 
   async function onSubmit(food: Food) {
     try {
-      await props.api.create(food);
+      await api.value.create(food);
       closeForm();
+      await getFoods();
     } catch (e) {
       if (e.name === 'DuplicateError') {
         openForm();
@@ -14,13 +24,17 @@
     }
   }
 
-  function setFood(f: Food) {
-    food.value = deepClone(f);
+  function setFoodFormEntity(f: Food) {
+    foodFormEntity.value = deepClone(f);
+  }
+
+  async function getFoods() {
+    foods.value = await api.value.find();
   }
 
   function openForm(set?: Food | 'new') {
     if (set) {
-      setFood(set === 'new' ? newFood : set);
+      setFoodFormEntity(set === 'new' ? newFood : set);
     }
     modalOpen.value = true;
   }
@@ -31,7 +45,7 @@
 
   const props = defineProps({
     api: {
-      type: Object,
+      type: Object as PropType<FoodApi>,
       required: true,
       validator(api: object) {
         return isFoodApi(api);
@@ -39,12 +53,15 @@
     },
   });
 
-  const newFood: Food = props.api.new();
-  const foodFormDescriptor = props.api.getFormDescriptor();
+  const api = toRef(props, 'api');
+  const newFood = api.value.new();
+  const foodFormDescriptor = api.value.getFormDescriptor();
   const modalOpen = ref(false);
-  const food = ref<Food>(deepClone(newFood));
-
-  const test = new Array(5);
+  const foodFormEntity = ref<Food>(deepClone(newFood));
+  const foods = ref<Food[]>([]);
+  if (isClient) {
+    await getFoods();
+  }
 </script>
 
 <template>
@@ -60,32 +77,31 @@
         </v-btn>
         <FoodForm
           v-model:modal-open="modalOpen"
-          :food="food"
+          :food="foodFormEntity"
           :food-form-descriptor="foodFormDescriptor"
           @submit="onSubmit" />
       </div>
-      <v-row class="mt-2" justify="center" justify-sm="start">
-        <template v-for="(t, index) in test" :key="index">
+      <client-only>
+        <p v-if="!foods || foods.length === 0" class="mt-4 pa-2 app--is-opaque">
+          Aucun résultats
+        </p>
+        <v-row v-else class="mt-2" justify="center" justify-sm="start">
+          <template v-for="food in foods" :key="food.id">
+            <v-col>
+              <!-- <FoodCard :food="food" /> -->
+            </v-col>
+          </template>
           <v-col>
-            <v-card class="mx-auto" min-width="300" max-width="400">
-              <v-card-item>
-                <v-card-title>This is a title</v-card-title>
-                <v-card-subtitle>This is a subtitle</v-card-subtitle>
-              </v-card-item>
-              <v-card-text> This is content</v-card-text>
-            </v-card>
+            <div style="min-width: 300px; max-width: 400px"></div>
           </v-col>
-        </template>
-        <v-col>
-          <div style="min-width: 300px; max-width: 400px"></div>
-        </v-col>
-        <v-col>
-          <div style="min-width: 300px; max-width: 400px"></div>
-        </v-col>
-        <v-col>
-          <div style="min-width: 300px; max-width: 400px"></div>
-        </v-col>
-      </v-row>
+          <v-col>
+            <div style="min-width: 300px; max-width: 400px"></div>
+          </v-col>
+          <v-col>
+            <div style="min-width: 300px; max-width: 400px"></div>
+          </v-col>
+        </v-row>
+      </client-only>
     </div>
   </BaseProgressPlaceholder>
 </template>
