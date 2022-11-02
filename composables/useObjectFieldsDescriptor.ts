@@ -29,12 +29,15 @@ enum InputType {
 
 interface FieldDescriptor {
   default?: any;
+  label?: string;
+  subLabel?: string;
+  preLabel?: string;
+  postLabel?: string;
   type?: keyof typeof InputType;
   min?: number;
   max?: number;
   required?: boolean;
   rules?: Validator[];
-  label?: string;
   custom?: boolean;
 }
 

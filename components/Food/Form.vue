@@ -9,6 +9,7 @@
     type Food,
     type WithoutId,
     type ObjectDescriptor,
+    FieldDescriptor,
   } from '#imports';
   import { type VForm } from 'vuetify/components/VForm';
   import { PropType } from 'vue';
@@ -103,8 +104,8 @@
   });
   const foodRef = ref<WithoutId<Food>>(deepClone(props.food));
   const foodIdentityDescriptor = computed(() => ({
-    brand: props.foodFormDescriptor.brand,
-    variety: props.foodFormDescriptor.variety,
+    brand: props.foodFormDescriptor.brand as FieldDescriptor,
+    variety: props.foodFormDescriptor.variety as FieldDescriptor,
   }));
   const form = {
     element: ref<VForm | null>(null),

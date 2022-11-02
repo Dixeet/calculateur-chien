@@ -1,4 +1,9 @@
-import { type ObjectDescriptor, useValidator } from '#imports';
+import {
+  type ObjectDescriptor,
+  useValidator,
+  FieldDescriptor,
+  round,
+} from '#imports';
 
 interface Composition {
   proteines: number;
@@ -9,6 +14,18 @@ interface Composition {
   calcium?: number;
   phosphore?: number;
 }
+interface CompleteComposition extends Composition {
+  ena: number;
+}
+interface Matter {
+  raw: number;
+  dry?: number;
+  label: string;
+  subLabel?: string;
+}
+type CompositionDetails = {
+  [K in keyof CompleteComposition]: Matter;
+};
 interface Food {
   id: string;
   brand: string;
@@ -42,6 +59,72 @@ type FoodDescriptor = WithoutId<Food> & {
   };
 };
 
+function getEna(comp: Composition) {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars
+  -- composition object without phosphore and calcium*/
+  const { phosphore, calcium, ...composition } = comp;
+  return Object.values(composition).reduce((p, c) => p - c, 100);
+}
+
+function getDryComposition(
+  composition: CompleteComposition,
+): CompleteComposition {
+  const dry = (matter: number) =>
+    round((matter * 100) / (100 - composition.humidity), 1);
+
+  return {
+    proteines: dry(composition.proteines),
+    lipides: dry(composition.lipides),
+    fibres: dry(composition.fibres),
+    cendres: dry(composition.cendres),
+    humidity: 0,
+    ena: dry(composition.ena),
+  };
+}
+
+function getCompositionDetails(
+  compositionObj: Composition,
+  compositionDescriptor: ObjectDescriptor<Composition>,
+) {
+  const rawComp: CompleteComposition = {
+    ...compositionObj,
+    ena: getEna(compositionObj),
+  };
+  const dryComp = getDryComposition(rawComp);
+  const getDetail = (
+    property: keyof Omit<CompositionDetails, 'ena'>,
+  ): Matter => ({
+    raw: rawComp[property] as Matter['raw'],
+    dry: dryComp[property],
+    label:
+      (compositionDescriptor[property]?.label as FieldDescriptor['label']) ??
+      '',
+    subLabel:
+      (compositionDescriptor[property]
+        ?.subLabel as FieldDescriptor['subLabel']) ?? '',
+  });
+  const res: CompositionDetails = {
+    proteines: getDetail('proteines'),
+    lipides: getDetail('lipides'),
+    fibres: getDetail('fibres'),
+    cendres: getDetail('cendres'),
+    humidity: getDetail('humidity'),
+    ena: {
+      raw: rawComp.ena,
+      dry: dryComp.ena,
+      label: 'ENA',
+      subLabel: 'Glucides',
+    },
+  };
+  if (rawComp.calcium) {
+    res.calcium = getDetail('calcium');
+  }
+  if (rawComp.phosphore) {
+    res.phosphore = getDetail('phosphore');
+  }
+
+  return res;
+}
 function useFood() {
   const objectDescriptor: ObjectDescriptor<FoodDescriptor> = {
     brand: {
@@ -64,7 +147,8 @@ function useFood() {
         max: 100,
         required: true,
         rules: compositionRules,
-        label: '% de Protéines *',
+        label: 'Protéines',
+        preLabel: '% de ',
       },
       lipides: {
         type: 'number',
@@ -73,7 +157,9 @@ function useFood() {
         max: 100,
         required: true,
         rules: compositionRules,
-        label: '% de Lipides / Matières Grasses *',
+        label: 'Lipides',
+        subLabel: 'Matières Grasses',
+        preLabel: '% de ',
       },
       fibres: {
         type: 'number',
@@ -82,7 +168,9 @@ function useFood() {
         max: 100,
         required: true,
         rules: compositionRules,
-        label: '% de Fibres / Cellulose Brute *',
+        label: 'Fibres',
+        subLabel: 'Cellulose Brute',
+        preLabel: '% de ',
       },
       cendres: {
         type: 'number',
@@ -91,7 +179,9 @@ function useFood() {
         max: 100,
         required: true,
         rules: compositionRules,
-        label: '% de Cendres / Matières Minérales *',
+        label: 'Cendres',
+        subLabel: 'Matière Minérales',
+        preLabel: '% de ',
       },
       humidity: {
         type: 'number',
@@ -100,7 +190,8 @@ function useFood() {
         max: 100,
         required: true,
         rules: compositionRules,
-        label: "% d'Humidité *",
+        label: 'Humidité',
+        preLabel: "% d'",
       },
       dividerOne: {
         type: 'divider',
@@ -112,7 +203,9 @@ function useFood() {
         min: 0,
         max: 100,
         rules: getRules(min(0), max(100)),
-        label: '% de Calcium (0 si non renseigné)',
+        label: 'Calcium',
+        preLabel: '% de ',
+        postLabel: ' (0 si non renseigné)',
       },
       phosphore: {
         type: 'number',
@@ -120,7 +213,9 @@ function useFood() {
         min: 0,
         max: 100,
         rules: getRules(min(0), max(100)),
-        label: '% de Phosphore (0 si non renseigné)',
+        label: 'Phosphore',
+        preLabel: '% de ',
+        postLabel: ' (0 si non renseigné)',
       },
     },
     meta: {
@@ -141,6 +236,12 @@ function useFood() {
 
   return {
     objectDescriptor,
+    getCompositionDetails(composition: Composition) {
+      return getCompositionDetails(
+        composition,
+        objectDescriptor.composition as ObjectDescriptor<Composition>,
+      );
+    },
   };
 }
 
