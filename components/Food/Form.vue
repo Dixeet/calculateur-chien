@@ -19,6 +19,11 @@
     errorMessages: string[];
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in template
+  type IsReturningFieldDescriptor<T> = {
+    [K in keyof Required<T>]: FieldDescriptor;
+  };
+
   function copyFoodProp() {
     foodRef.value = deepClone(props.food);
     tab.value = 'description';
@@ -104,9 +109,10 @@
   });
   const foodRef = ref<WithoutId<Food>>(deepClone(props.food));
   const foodIdentityDescriptor = computed(() => ({
-    brand: props.foodFormDescriptor.brand as FieldDescriptor,
-    variety: props.foodFormDescriptor.variety as FieldDescriptor,
+    brand: props.foodFormDescriptor.brand,
+    variety: props.foodFormDescriptor.variety,
   }));
+
   const form = {
     element: ref<VForm | null>(null),
     valid: ref(false),
@@ -199,10 +205,10 @@
                   <v-divider class="mb-3 mt-1" />
                   <v-row no-gutters class="mx-n3">
                     <BaseFormInput
-                      v-for="(field, key) in foodFormDescriptor.meta"
+                      v-for="(field, key) in foodFormDescriptor.meta as IsReturningFieldDescriptor<Food['meta']>"
                       :id="`description-meta-${key}-${form.id}`"
                       :key="key"
-                      v-model="foodRef!.meta![key as keyof Food['meta']]"
+                      v-model="foodRef.meta![key]"
                       class="px-3"
                       cols="12"
                       sm="6"
@@ -227,10 +233,10 @@
                   <v-divider class="mb-3 mt-1" />
                   <v-row no-gutters class="mx-n3">
                     <BaseFormInput
-                      v-for="(field, key) in foodFormDescriptor.meta"
+                      v-for="(field, key) in foodFormDescriptor.meta as IsReturningFieldDescriptor<Food['meta']>"
                       :id="`description-variation${index}-${key}-${form.id}`"
                       :key="key"
-                      v-model="variation![key as keyof Food['meta']]"
+                      v-model="variation![key]"
                       class="px-3"
                       cols="12"
                       sm="6"
@@ -241,10 +247,10 @@
               <v-window-item eager value="composition">
                 <v-row no-gutters class="mx-n3">
                   <BaseFormInput
-                    v-for="(field, key) in foodFormDescriptor.composition"
+                    v-for="(field, key) in foodFormDescriptor.composition  as IsReturningFieldDescriptor<Food['composition']>"
                     :id="`composition-${key}-${form.id}`"
                     :key="key"
-                    v-model="foodRef.composition[key as keyof Food['composition']]"
+                    v-model="foodRef.composition[key]"
                     class="px-3"
                     cols="12"
                     :field="field"

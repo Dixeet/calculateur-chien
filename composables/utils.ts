@@ -2,6 +2,10 @@ import { unref } from '#imports';
 import type { Ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
 const isClient = typeof window !== 'undefined';
 
 function deepClone<T extends object | Ref<T> = object>(obj: T | Ref<T>): T {
@@ -22,4 +26,4 @@ function uuid() {
   return uuidv4();
 }
 
-export { isClient, deepClone, byteSize, round, simpleUid, uuid };
+export { isClient, deepClone, byteSize, round, simpleUid, uuid, type Entries };

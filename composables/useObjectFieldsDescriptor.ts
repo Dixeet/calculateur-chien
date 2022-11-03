@@ -1,4 +1,4 @@
-import { type Validator } from './useValidator';
+import { type Validator, type Entries } from '#imports';
 
 enum InputType {
   array,
@@ -10,6 +10,7 @@ enum InputType {
   divider,
   email,
   file,
+  function,
   hidden,
   image,
   month,
@@ -42,16 +43,20 @@ interface FieldDescriptor {
 }
 
 type ExcludeFieldDescriptorKeys<K> = Exclude<K, keyof FieldDescriptor>;
+type IsNotArrayOrFn<T> = T extends any[] | ((...f: any) => any) ? never : T;
+type IsObjectOrUndef<T> = T extends object | undefined ? T : never;
+type IsObjectDescriptor<T> = T extends IsObjectOrUndef<T> & IsNotArrayOrFn<T>
+  ? T
+  : never;
 
 type ObjectDescriptor<T> = {
-  [K in keyof (T & FieldDescriptor)]:
-    | FieldDescriptor
-    | ObjectDescriptor<T[ExcludeFieldDescriptorKeys<K>]>;
+  [K in keyof (T &
+    FieldDescriptor)]: T[ExcludeFieldDescriptorKeys<K>] extends IsObjectDescriptor<
+    T[ExcludeFieldDescriptorKeys<K>]
+  >
+    ? ObjectDescriptor<T[ExcludeFieldDescriptorKeys<K>]>
+    : FieldDescriptor;
 };
-
-type Entries<T> = {
-  [K in keyof T]: [K, T[K]];
-}[keyof T][];
 
 function isFieldDescriptor<T>(
   obj: FieldDescriptor | ObjectDescriptor<T>,
@@ -66,7 +71,9 @@ function isFieldDescriptor<T>(
 function useObjectFieldsDescriptor() {
   function getDefaultObject<T>(obj: ObjectDescriptor<T>) {
     const res = {} as T;
-    for (const [key, value] of Object.entries(obj) as Entries<T | FieldDescriptor>) {
+    for (const [key, value] of Object.entries(obj) as Entries<
+      T | FieldDescriptor
+    >) {
       if (isFieldDescriptor(value) && typeof value.default !== undefined) {
         res[key] = (value as FieldDescriptor).default;
       } else if (!isFieldDescriptor(value)) {
@@ -82,4 +89,4 @@ function useObjectFieldsDescriptor() {
 }
 
 export default useObjectFieldsDescriptor;
-export { type ObjectDescriptor, type FieldDescriptor };
+export { type ObjectDescriptor, type FieldDescriptor, isFieldDescriptor };
