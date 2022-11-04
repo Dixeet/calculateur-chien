@@ -1,8 +1,8 @@
 import {
   type ObjectDescriptor,
   useValidator,
-  FieldDescriptor,
   round,
+  type WithoutId,
 } from '#imports';
 
 interface Composition {
@@ -31,31 +31,28 @@ interface Food {
   brand: string;
   variety: string;
   composition: Composition;
-  meta?: { price?: number };
-  variations?: Food['meta'][];
+  meta: { price?: number };
+  variations: Food['meta'][];
 }
 interface Kibble extends Omit<Food, 'variations'> {
-  meta?: Food['meta'] & {
+  meta: Food['meta'] & {
     weight?: number;
   };
-  variations?: Kibble['meta'][];
+  variations: Kibble['meta'][];
 }
 interface TinCan extends Omit<Food, 'variations'> {
-  meta?: Food['meta'] & {
+  meta: Food['meta'] & {
     numberOfCans?: number;
     canWeight?: number;
   };
-  variations?: TinCan['meta'][];
+  variations: TinCan['meta'][];
 }
 
-type FoodType = 'kibbles' | 'tincans';
-type WithoutId<T> = Omit<T, 'id'>;
+type FoodTypeName = 'kibbles' | 'tincans' | 'food';
+type FoodType = Food | Kibble | TinCan;
 type FoodDescriptor = WithoutId<Food> & {
   composition: {
-    dividerOne?: {
-      type: 'divider';
-      custom: true;
-    };
+    dividerOne?: 'divider';
   };
 };
 
@@ -91,17 +88,11 @@ function getCompositionDetails(
     ena: getEna(compositionObj),
   };
   const dryComp = getDryComposition(rawComp);
-  const getDetail = (
-    property: keyof Omit<CompositionDetails, 'ena'>,
-  ): Matter => ({
-    raw: rawComp[property] as Matter['raw'],
+  const getDetail = (property: keyof Composition): Matter => ({
+    raw: rawComp[property]!,
     dry: dryComp[property],
-    label:
-      (compositionDescriptor[property]?.label as FieldDescriptor['label']) ??
-      '',
-    subLabel:
-      (compositionDescriptor[property]
-        ?.subLabel as FieldDescriptor['subLabel']) ?? '',
+    label: compositionDescriptor[property]?.label ?? '',
+    subLabel: compositionDescriptor[property]?.subLabel ?? '',
   });
   const res: CompositionDetails = {
     proteines: getDetail('proteines'),
@@ -125,6 +116,7 @@ function getCompositionDetails(
 
   return res;
 }
+
 function useFood() {
   const objectDescriptor: ObjectDescriptor<FoodDescriptor> = {
     brand: {
@@ -237,10 +229,7 @@ function useFood() {
   return {
     objectDescriptor,
     getCompositionDetails(composition: Composition) {
-      return getCompositionDetails(
-        composition,
-        objectDescriptor.composition as ObjectDescriptor<Composition>,
-      );
+      return getCompositionDetails(composition, objectDescriptor.composition);
     },
   };
 }
@@ -305,7 +294,7 @@ export {
   useTinCan,
   type Food,
   type FoodType,
+  type FoodTypeName,
   type Kibble,
   type TinCan,
-  type WithoutId,
 };

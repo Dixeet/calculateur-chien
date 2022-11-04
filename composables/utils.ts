@@ -6,6 +6,8 @@ type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
 
+type WithoutId<T> = Omit<T, 'id'>;
+
 const isClient = typeof window !== 'undefined';
 
 function deepClone<T extends object | Ref<T> = object>(obj: T | Ref<T>): T {
@@ -26,4 +28,13 @@ function uuid() {
   return uuidv4();
 }
 
-export { isClient, deepClone, byteSize, round, simpleUid, uuid, type Entries };
+export {
+  isClient,
+  deepClone,
+  byteSize,
+  round,
+  simpleUid,
+  uuid,
+  type Entries,
+  type WithoutId,
+};

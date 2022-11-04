@@ -10,6 +10,7 @@ import {
   type Food,
   type Kibble,
   type TinCan,
+  type FoodTypeName,
   type FoodType,
 } from '#imports';
 
@@ -21,7 +22,7 @@ function isFoodApi(obj: object): obj is FoodApi {
   return (obj as FoodApi).getFormDescriptor !== undefined;
 }
 
-function foodApi<Type extends Food | Kibble | TinCan = Food>(type: FoodType) {
+function foodApi<Type extends FoodType = Food>(type: FoodTypeName) {
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
@@ -157,7 +158,7 @@ function isKibbleApi(obj: object): obj is KibbleApi {
 }
 
 function kibbleApi() {
-  const kibblesName: FoodType = 'kibbles';
+  const kibblesName: FoodTypeName = 'kibbles';
   localStorage.registerService(kibblesName);
   const kibble = foodApi<Kibble>(kibblesName);
   return {
@@ -177,7 +178,7 @@ function isTinCanApi(obj: object): obj is TinCanApi {
 }
 
 function tinCanApi() {
-  const tincanName: FoodType = 'tincans';
+  const tincanName: FoodTypeName = 'tincans';
   localStorage.registerService(tincanName);
   const tincan = foodApi<TinCan>(tincanName);
   return {

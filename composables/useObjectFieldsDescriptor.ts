@@ -42,7 +42,6 @@ interface FieldDescriptor {
   custom?: boolean;
 }
 
-type ExcludeFieldDescriptorKeys<K> = Exclude<K, keyof FieldDescriptor>;
 type IsNotArrayOrFn<T> = T extends any[] | ((...f: any) => any) ? never : T;
 type IsObjectOrUndef<T> = T extends object | undefined ? T : never;
 type IsObjectDescriptor<T> = T extends IsObjectOrUndef<T> & IsNotArrayOrFn<T>
@@ -50,11 +49,10 @@ type IsObjectDescriptor<T> = T extends IsObjectOrUndef<T> & IsNotArrayOrFn<T>
   : never;
 
 type ObjectDescriptor<T> = {
-  [K in keyof (T &
-    FieldDescriptor)]: T[ExcludeFieldDescriptorKeys<K>] extends IsObjectDescriptor<
-    T[ExcludeFieldDescriptorKeys<K>]
+  [K in keyof T]: ObjectDescriptor<T[K]> extends IsObjectDescriptor<
+    ObjectDescriptor<T[K]>
   >
-    ? ObjectDescriptor<T[ExcludeFieldDescriptorKeys<K>]>
+    ? ObjectDescriptor<T[K]>
     : FieldDescriptor;
 };
 
@@ -68,16 +66,22 @@ function isFieldDescriptor<T>(
   return isBasic || isCustom;
 }
 
+function isObjectDescriptor<T>(
+  obj: FieldDescriptor | ObjectDescriptor<T>,
+): obj is ObjectDescriptor<T> {
+  return !isFieldDescriptor(obj);
+}
+
 function useObjectFieldsDescriptor() {
   function getDefaultObject<T>(obj: ObjectDescriptor<T>) {
     const res = {} as T;
     for (const [key, value] of Object.entries(obj) as Entries<
-      T | FieldDescriptor
+      ObjectDescriptor<T>
     >) {
       if (isFieldDescriptor(value) && typeof value.default !== undefined) {
-        res[key] = (value as FieldDescriptor).default;
-      } else if (!isFieldDescriptor(value)) {
-        res[key] = getDefaultObject(value as ObjectDescriptor<T[typeof key]>);
+        res[key] = value.default;
+      } else if (isObjectDescriptor(value)) {
+        res[key] = getDefaultObject(value);
       }
     }
     return res;

@@ -1,4 +1,4 @@
-import { useState, isClient, uuid } from '#imports';
+import { useState, isClient, uuid, WithoutId } from '#imports';
 import { type VAlert } from 'vuetify/components/VAlert';
 
 interface Notification extends VAlerProps {
@@ -9,7 +9,7 @@ interface Notification extends VAlerProps {
 }
 
 type VAlerProps = VAlert['$props'];
-type NewNotification = Omit<Notification, 'id'> & { id?: string };
+type NewNotification = WithoutId<Notification> & { id?: string };
 type DeleteFn = (notif: Notification) => boolean;
 
 const defaultNotification: NewNotification = {
@@ -38,11 +38,12 @@ function useNotification(
 ) {
   if (isClient) {
     if (add) {
-      add.id = add.id ?? uuid();
-      notifications().value.push({
+      const notification: Notification = {
         ...defaultNotification,
         ...add,
-      } as Notification);
+        id: add.id ?? uuid(),
+      };
+      notifications().value.push(notification);
     }
     switch (typeof remove) {
       case 'object':
