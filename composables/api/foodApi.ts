@@ -23,7 +23,7 @@ function isFoodApi(obj: object): obj is FoodApi {
   return (obj as FoodApi).getFormDescriptor !== undefined;
 }
 
-function foodApi<Type extends FoodType = Food>(type: FoodTypeName) {
+function foodApi<Type extends FoodType>(type: FoodTypeName) {
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
@@ -33,7 +33,7 @@ function foodApi<Type extends FoodType = Food>(type: FoodTypeName) {
     },
 
     new() {
-      return getDefaultObject<Food>(this.getFormDescriptor());
+      return getDefaultObject<Type>(this.getFormDescriptor());
     },
 
     async find(fn: ((entity: Type) => boolean) | null = null) {
@@ -167,9 +167,6 @@ function kibbleApi() {
     name: kibblesName,
     ...kibble,
     helper: useKibble(),
-    new() {
-      return getDefaultObject<Kibble>(this.getFormDescriptor());
-    },
   };
 }
 
@@ -185,9 +182,6 @@ function tinCanApi() {
     name: tincanName,
     ...tincan,
     helper: useTinCan(),
-    new() {
-      return getDefaultObject<TinCan>(this.getFormDescriptor());
-    },
   };
 }
 

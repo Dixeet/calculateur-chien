@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-  import { type Food, type FoodApi } from '#imports';
+  import { type FoodType, type ApiType } from '#imports';
   import { PropType } from 'vue';
 
   const props = defineProps({
     food: {
-      type: Object as PropType<Food>,
+      type: Object as PropType<FoodType>,
       required: true,
     },
     editable: {
@@ -12,7 +12,7 @@
       default: false,
     },
     helper: {
-      type: Object as PropType<FoodApi['helper']>,
+      type: Object as PropType<ApiType['helper']>,
       required: true,
     },
   });

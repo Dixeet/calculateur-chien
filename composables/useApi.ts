@@ -15,5 +15,5 @@ function useApi() {
 }
 
 export default useApi;
-export { isFoodApi, type FoodApi } from './api/foodApi';
+export { isFoodApi, type FoodApi, type ApiType } from './api/foodApi';
 export { type DogDescriptionsType } from './api/dogDescriptionApi';

@@ -5,12 +5,12 @@
     isFoodApi,
     ref,
     toRef,
-    type Food,
-    type FoodApi,
+    type FoodType,
+    type ApiType,
   } from '#imports';
   import { PropType } from 'vue';
 
-  async function onSubmit(food: Food) {
+  async function onSubmit<T extends FoodType>(food: T) {
     try {
       await api.value.create(food);
       closeForm();
@@ -24,7 +24,7 @@
     }
   }
 
-  function setFoodFormEntity(f: Food) {
+  function setFoodFormEntity(f: FoodType) {
     foodFormEntity.value = deepClone(f);
   }
 
@@ -32,7 +32,7 @@
     foods.value = await api.value.find();
   }
 
-  function openForm(set?: Food | 'new') {
+  function openForm(set?: FoodType | 'new') {
     if (set) {
       setFoodFormEntity(set === 'new' ? newFood : set);
     }
@@ -45,7 +45,7 @@
 
   const props = defineProps({
     api: {
-      type: Object as PropType<FoodApi>,
+      type: Object as PropType<ApiType>,
       required: true,
       validator(api: object) {
         return isFoodApi(api);
@@ -57,8 +57,8 @@
   const newFood = api.value.new();
   const foodFormDescriptor = api.value.getFormDescriptor();
   const modalOpen = ref(false);
-  const foodFormEntity = ref<Food>(deepClone(newFood));
-  const foods = ref<Food[]>([]);
+  const foodFormEntity = ref<FoodType>(deepClone(newFood));
+  const foods = ref<FoodType[]>([]);
   if (isClient) {
     await getFoods();
   }
