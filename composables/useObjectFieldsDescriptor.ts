@@ -49,9 +49,7 @@ type IsObjectDescriptor<T> = T extends IsObjectOrUndef<T> & IsNotArrayOrFn<T>
   : never;
 
 type ObjectDescriptor<T> = {
-  [K in keyof T]: ObjectDescriptor<T[K]> extends IsObjectDescriptor<
-    ObjectDescriptor<T[K]>
-  >
+  [K in keyof T]: T[K] extends IsObjectDescriptor<T[K]>
     ? ObjectDescriptor<T[K]>
     : FieldDescriptor;
 };
