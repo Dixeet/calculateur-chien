@@ -40,6 +40,7 @@ interface FieldDescriptor {
   required?: boolean;
   rules?: Validator[];
   custom?: boolean;
+  unit?: string,
 }
 
 type IsNotArrayOrFn<T> = T extends any[] | ((...f: any) => any) ? never : T;

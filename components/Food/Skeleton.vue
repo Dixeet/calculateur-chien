@@ -88,7 +88,7 @@
         <v-row v-else class="mt-2" justify="center" justify-sm="start">
           <template v-for="food in foods" :key="food.id">
             <v-col>
-              <FoodCard :food="food" />
+              <FoodCard :food="food" :helper="api.helper" />
             </v-col>
           </template>
           <v-col>

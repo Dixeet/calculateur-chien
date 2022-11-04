@@ -1,4 +1,4 @@
 export default {
-  '*.{ts,vue}': [() => 'npx vue-tsc --skipLibCheck --noEmit', 'npx eslint'],
+  '*.{ts,vue}': ['npx eslint', () => 'npx vue-tsc --skipLibCheck --noEmit'],
   '*.{js,mjs,cjs}': 'npx eslint',
 };

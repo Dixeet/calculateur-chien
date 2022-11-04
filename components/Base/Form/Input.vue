@@ -11,7 +11,7 @@
   }
   const props = defineProps({
     modelValue: {
-      type: [String, Number],
+      type: [String, Number, Function],
       default: null,
     },
     field: {

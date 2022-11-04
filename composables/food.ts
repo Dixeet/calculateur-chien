@@ -3,6 +3,8 @@ import {
   useValidator,
   round,
   type WithoutId,
+  Entries,
+  isFieldDescriptor,
 } from '#imports';
 
 interface Composition {
@@ -26,17 +28,21 @@ interface Matter {
 type CompositionDetails = {
   [K in keyof CompleteComposition]: Matter;
 };
+type MetaDetail<T> = {
+  [K in keyof T]: { value: unknown; label: unknown; unit: unknown };
+};
 interface Food {
   id: string;
   brand: string;
   variety: string;
   composition: Composition;
-  meta: { price?: number };
+  meta: { price?: number; pricePerKg?: (m: Food['meta']) => number };
   variations: Food['meta'][];
 }
 interface Kibble extends Omit<Food, 'variations'> {
   meta: Food['meta'] & {
     weight?: number;
+    pricePerKg?: number;
   };
   variations: Kibble['meta'][];
 }
@@ -44,12 +50,13 @@ interface TinCan extends Omit<Food, 'variations'> {
   meta: Food['meta'] & {
     numberOfCans?: number;
     canWeight?: number;
+    pricePerKg?: number;
   };
   variations: TinCan['meta'][];
 }
 
-type FoodTypeName = 'kibbles' | 'tincans' | 'food';
-type FoodType = Food | Kibble | TinCan;
+type FoodTypeName = 'kibbles' | 'tincans';
+type FoodType = Kibble | TinCan;
 type FoodDescriptor = WithoutId<Food> & {
   composition: {
     dividerOne?: 'divider';
@@ -114,6 +121,36 @@ function getCompositionDetails(
     res.phosphore = getDetail('phosphore');
   }
 
+  return res;
+}
+
+function getMetaDetail<T extends Food>(
+  meta: T['meta'],
+  metaDescriptor: ObjectDescriptor<T['meta']>,
+) {
+  const res = {} as MetaDetail<T['meta']>;
+  for (const [key, m] of Object.entries(metaDescriptor) as Entries<
+    typeof metaDescriptor
+  >) {
+    if (isFieldDescriptor(m)) {
+      if (meta[key]) {
+        res[key] = {
+          value: meta[key],
+          label: m.label,
+          unit: m.unit!,
+        };
+      } else if (m.type === 'function') {
+        const value = m.default(meta);
+        if (typeof value !== 'undefined') {
+          res[key] = {
+            value: m.default(meta),
+            label: m.label,
+            unit: m.unit!,
+          };
+        }
+      }
+    }
+  }
   return res;
 }
 
@@ -217,6 +254,7 @@ function useFood() {
         type: 'number',
         min: 0,
         label: 'Prix',
+        unit: '€',
       },
     },
     variations: {
@@ -229,7 +267,13 @@ function useFood() {
   return {
     objectDescriptor,
     getCompositionDetails(composition: Composition) {
-      return getCompositionDetails(composition, objectDescriptor.composition);
+      return getCompositionDetails(
+        composition,
+        this.objectDescriptor.composition,
+      );
+    },
+    getMetaDetail<T extends Food>(meta: T['meta']) {
+      return getMetaDetail(meta, this.objectDescriptor.meta);
     },
   };
 }
@@ -240,17 +284,29 @@ function useKibble() {
     ...foodFormDescriptor,
     meta: {
       ...foodFormDescriptor.meta,
+      pricePerKg: {
+        custom: true,
+        label: 'Prix au kilo',
+        type: 'function',
+        unit: '€/kg',
+        default: (meta: Kibble['meta']) =>
+          typeof meta.price !== 'undefined' && meta?.weight
+            ? round(meta.price / meta.weight, 2)
+            : undefined,
+      },
       weight: {
         default: 0,
         type: 'number',
         min: 0,
         label: 'Poids du sac',
         rules: minZeroRule,
+        unit: 'kg',
       },
     },
   };
 
   return {
+    ...useFood(),
     objectDescriptor,
   };
 }
@@ -261,11 +317,24 @@ function useTinCan() {
     ...foodFormDescriptor,
     meta: {
       ...foodFormDescriptor.meta,
+      pricePerKg: {
+        custom: true,
+        label: 'Prix au kilo',
+        unit: '€/kg',
+        type: 'function',
+        default: (meta: TinCan['meta']) =>
+          typeof meta.price !== 'undefined' &&
+          meta?.canWeight &&
+          meta?.numberOfCans
+            ? round(meta.price / (meta.canWeight * meta.numberOfCans), 2)
+            : undefined,
+      },
       canWeight: {
         default: 0,
         type: 'number',
         min: 0,
         label: "Poids d'une boite",
+        unit: 'kg',
         rules: minZeroRule,
       },
       numberOfCans: {
@@ -279,6 +348,7 @@ function useTinCan() {
   };
 
   return {
+    ...useFood(),
     objectDescriptor,
   };
 }

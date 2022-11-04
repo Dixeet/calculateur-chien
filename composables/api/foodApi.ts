@@ -17,6 +17,7 @@ import {
 type TinCanApi = ReturnType<typeof tinCanApi>;
 type FoodApi = ReturnType<typeof foodApi>;
 type KibbleApi = ReturnType<typeof kibbleApi>;
+type ApiType = FoodApi | KibbleApi | TinCanApi;
 
 function isFoodApi(obj: object): obj is FoodApi {
   return (obj as FoodApi).getFormDescriptor !== undefined;
@@ -26,8 +27,9 @@ function foodApi<Type extends FoodType = Food>(type: FoodTypeName) {
   let data: Array<Type> = localStorage.get(type) ?? [];
 
   return {
+    helper: useFood(),
     getFormDescriptor() {
-      return useFood().objectDescriptor;
+      return this.helper.objectDescriptor;
     },
 
     new() {
@@ -164,9 +166,7 @@ function kibbleApi() {
   return {
     name: kibblesName,
     ...kibble,
-    getFormDescriptor() {
-      return useKibble().objectDescriptor;
-    },
+    helper: useKibble(),
     new() {
       return getDefaultObject<Kibble>(this.getFormDescriptor());
     },
@@ -184,9 +184,7 @@ function tinCanApi() {
   return {
     name: tincanName,
     ...tincan,
-    getFormDescriptor() {
-      return useTinCan().objectDescriptor;
-    },
+    helper: useTinCan(),
     new() {
       return getDefaultObject<TinCan>(this.getFormDescriptor());
     },
@@ -204,4 +202,5 @@ export {
   isTinCanApi,
   tinCanApi,
   type FoodApi,
+  type ApiType,
 };
